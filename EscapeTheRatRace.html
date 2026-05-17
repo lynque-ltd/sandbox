@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Escape the Rat Race - A Choose-Your-Own-Adventure towards Financial Freedom</title>
+<style>
+  :root {
+    --gold: #FFD700;
+    --green: #2ECC71;
+    --red: #E74C3C;
+    --blue: #3498DB;
+    --purple: #9B59B6;
+    --orange: #E67E22;
+    --dark: #2C3E50;
+    --light: #ECF0F1;
+    --comic-yellow: #FFF9C4;
+    --comic-red: #FF5252;
+    --comic-blue: #448AFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive, sans-serif;
+    background: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HUD === */
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-bottom: 3px solid var(--gold);
+    padding: 8px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; flex-wrap: wrap;
+    font-size: 14px;
+  }
+  .hud-item {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.1); border-radius: 20px;
+    padding: 4px 12px; white-space: nowrap;
+  }
+  .hud-item span { font-weight: bold; color: var(--gold); }
+  #concept-bar {
+    width: 100%; height: 6px; background: #333; border-radius: 3px;
+    overflow: hidden; margin-top: 4px;
+  }
+  #concept-fill {
+    height: 100%; background: linear-gradient(90deg, var(--green), var(--gold));
+    transition: width 0.5s ease; border-radius: 3px;
+  }
+
+  /* === MAIN CONTAINER === */
+  #game-container {
+    max-width: 640px; margin: 0 auto;
+    padding: 80px 16px 100px;
+    min-height: 100vh;
+  }
+
+  /* === SCENE CARD === */
+  .scene-card {
+    background: white;
+    border-radius: 16px;
+    border: 4px solid var(--dark);
+    box-shadow: 8px 8px 0 var(--dark);
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    animation: cardIn 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .scene-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: repeating-linear-gradient(90deg, var(--comic-red), var(--comic-red) 10px, var(--comic-yellow) 10px, var(--comic-yellow) 20px);
+  }
+  @keyframes cardIn {
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  /* === SPEECH BUBBLE === */
+  .speech-bubble {
+    background: var(--comic-yellow);
+    border: 3px solid var(--dark);
+    border-radius: 20px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute; bottom: -15px; left: 30px;
+    border: 8px solid transparent;
+    border-top-color: var(--dark);
+    border-bottom: 0;
+  }
+  .speech-bubble.narrator {
+    background: var(--light);
+    font-style: italic;
+  }
+  .speech-bubble.narrator::after { display: none; }
+
+  /* === CHARACTER HEADER === */
+  .char-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .char-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 3px solid var(--dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .char-name {
+    font-weight: bold; font-size: 18px;
+    color: var(--dark);
+  }
+  .char-title {
+    font-size: 12px; color: #666;
+  }
+
+  /* === CHOICES === */
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .choice-btn {
+    background: white;
+    border: 3px solid var(--dark);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+    box-shadow: 4px 4px 0 var(--dark);
+    transition: all 0.1s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .choice-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--dark);
+    background: var(--comic-yellow);
+  }
+  .choice-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--dark);
+  }
+  .choice-icon { font-size: 22px; flex-shrink: 0; }
+
+  /* === CONCEPT LEARNED BADGE === */
+  .concept-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--green), #27ae60);
+    color: white; border-radius: 20px;
+    padding: 6px 14px; font-size: 13px; font-weight: bold;
+    margin: 8px 4px; animation: badgePop 0.5s ease;
+  }
+  @keyframes badgePop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* === MINI-GAME AREA === */
+  .mini-game {
+    background: #f8f9fa;
+    border: 3px dashed var(--dark);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    text-align: center;
+  }
+  .mini-game h3 {
+    font-size: 16px; margin-bottom: 12px;
+    color: var(--dark);
+  }
+
+  /* === ASSET SORT GAME === */
+  .sort-items { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+  .sort-item {
+    padding: 8px 14px; border-radius: 20px;
+    border: 2px solid var(--dark);
+    cursor: pointer; font-size: 14px;
+    transition: all 0.2s;
+    background: white;
+  }
+  .sort-item.asset { background: #d4edda; }
+  .sort-item.liability { background: #f8d7da; }
+  .sort-item.correct { border-color: var(--green); box-shadow: 0 0 8px var(--green); }
+  .sort-item.wrong { border-color: var(--red); box-shadow: 0 0 8px var(--red); animation: shake 0.3s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .sort-zones {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
+  }
+  .sort-zone {
+    border: 3px dashed; border-radius: 12px;
+    padding: 12px; min-height: 80px;
+    text-align: center; font-weight: bold; font-size: 14px;
+  }
+  .sort-zone.assets { border-color: var(--green); background: #eafbea; }
+  .sort-zone.liabilities { border-color: var(--red); background: #fde8e8; }
+
+  /* === CAUGHT BALLS === */
+  .ball-grid { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 8px 0; }
+  .caught-ball {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 2px solid var(--dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    animation: ballBounce 0.4s ease;
+  }
+  @keyframes ballBounce {
+    0% { transform: scale(0) rotate(180deg); }
+    60% { transform: scale(1.2) rotate(-20deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  /* === PUZZLE === */
+  .puzzle-options { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+  .puzzle-opt {
+    padding: 12px; border: 2px solid var(--dark);
+    border-radius: 8px; cursor: pointer;
+    background: white; font-family: inherit;
+    font-size: 14px; text-align: left;
+    transition: all 0.15s;
+  }
+  .puzzle-opt:hover { background: var(--comic-yellow); }
+  .puzzle-opt.correct { background: #d4edda; border-color: var(--green); }
+  .puzzle-opt.wrong { background: #f8d7da; border-color: var(--red); }
+
+  /* === MARKET GAME === */
+  .market-chart {
+    height: 120px; background: white;
+    border: 2px solid var(--dark); border-radius: 8px;
+    margin: 12px 0; position: relative;
+    overflow: hidden;
+  }
+  .market-line {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: flex-end;
+    height: 100%;
+  }
+  .market-bar {
+    flex: 1; background: var(--blue);
+    margin: 0 1px; border-radius: 2px 2px 0 0;
+    transition: height 0.3s;
+  }
+  .market-bar.red { background: var(--red); }
+  .market-bar.green { background: var(--green); }
+
+  /* === COMIC PANELS === */
+  .comic-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px; margin: 12px 0;
+  }
+  .comic-panel {
+    border: 3px solid var(--dark);
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+    text-align: center;
+    font-size: 13px;
+    min-height: 80px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .comic-panel .panel-emoji { font-size: 32px; margin-bottom: 4px; }
+
+  /* === TITLE SCREEN === */
+  #title-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  #title-screen h1 {
+    font-size: 32px;
+    color: var(--gold);
+    text-shadow: 3px 3px 0 var(--dark);
+    margin-bottom: 8px;
+  }
+  #title-screen .subtitle {
+    font-size: 16px; color: var(--light);
+    margin-bottom: 24px;
+  }
+  .title-characters {
+    display: flex; flex-wrap: wrap;
+    justify-content: center; gap: 12px;
+    margin: 20px 0;
+  }
+  .title-char {
+    width: 64px; text-align: center;
+  }
+  .title-char .emoji { font-size: 36px; }
+  .title-char .name { font-size: 11px; color: var(--light); }
+  .start-btn {
+    background: var(--gold);
+    color: var(--dark);
+    border: 4px solid var(--dark);
+    border-radius: 16px;
+    padding: 16px 40px;
+    font-size: 22px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 6px 6px 0 var(--dark);
+    margin-top: 20px;
+    transition: all 0.1s;
+  }
+  .start-btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 var(--dark); }
+  .start-btn:active { transform: translate(6px, 6px); box-shadow: 0 0 0 var(--dark); }
+
+  /* === ENDING === */
+  .ending-card {
+    text-align: center;
+    padding: 20px;
+  }
+  .ending-card h2 { font-size: 24px; margin-bottom: 12px; }
+  .concept-summary {
+    text-align: left;
+    background: var(--light);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 12px 0;
+  }
+  .concept-summary .earned { color: var(--green); }
+  .concept-summary .missed { color: #999; text-decoration: line-through; }
+
+  /* === SCENE TITLE === */
+  .scene-title {
+    font-size: 20px; font-weight: bold;
+    color: var(--dark);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px dashed #ccc;
+  }
+
+  /* === EXPLANATION BOX === */
+  .explain-box {
+    background: #e3f2fd;
+    border-left: 4px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .explain-box strong { color: var(--dark); }
+
+  /* === SCORE POPUP === */
+  .score-popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: var(--gold);
+    border: 4px solid var(--dark);
+    border-radius: 16px;
+    padding: 20px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 200;
+    box-shadow: 8px 8px 0 var(--dark);
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  .score-popup.show {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 480px) {
+    #game-container { padding: 75px 10px 90px; }
+    .scene-card { padding: 16px 14px; }
+    .speech-bubble { font-size: 14px; padding: 12px 14px; }
+    #title-screen h1 { font-size: 26px; }
+    .sort-zones { grid-template-columns: 1fr; }
+    .comic-strip { grid-template-columns: 1fr; }
+    .hud-item { font-size: 12px; padding: 3px 8px; }
+  }
+
+  /* === CONFETTI === */
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 10px;
+    z-index: 300;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- HUD -->
+<div id="hud" style="display:none;">
+  <div class="hud-item">💰 <span id="coin-count">0</span> Coins</div>
+  <div class="hud-item">📚 <span id="concept-count">0</span>/<span id="concept-total">0</span> Concepts</div>
+  <div class="hud-item">🏆 <span id="chapter-name">Prologue</span></div>
+  <div id="concept-bar"><div id="concept-fill" style="width:0%"></div></div>
+</div>
+
+<!-- SCORE POPUP -->
+<div id="score-popup" class="score-popup"></div>
+
+<!-- GAME CONTAINER -->
+<div id="game-container">
+  <div id="title-screen">
+    <h1>💰 Escape the Rat Race 💰</h1>
+    <p class="subtitle">A Choose-Your-Own-Adventure towards Financial Freedom</p>
+    <div class="title-characters">
+      <div class="title-char"><div class="emoji">👴</div><div class="name">Rich Dad</div></div>
+      <div class="title-char"><div class="emoji">📚</div><div class="name">Benjamin G.</div></div>
+      <div class="title-char"><div class="emoji">🧔</div><div class="name">Warren B.</div></div>
+      <div class="title-char"><div class="emoji">💈</div><div class="name">Barber Roy</div></div>
+      <div class="title-char"><div class="emoji">🧘</div><div class="name">Naval</div></div>
+      <div class="title-char"><div class="emoji">🔍</div><div class="name">Peter L.</div></div>
+      <div class="title-char"><div class="emoji">🎩</div><div class="name">Mr. Market</div></div>
+      <div class="title-char"><div class="emoji">🏠</div><div class="name">Stanley</div></div>
+    </div>
+    <p style="color:#aaa;font-size:13px;margin:16px 0;">
+      Meet the greatest money minds in history.<br>
+      Learn their secrets. Build your fortune.<br>
+      Escape the Rat Race. 🐀🚫
+    </p>
+    <button class="start-btn" onclick="startGame()">START ADVENTURE</button>
+    <p style="color:#666;font-size:11px;margin-top:16px;">
+      Based on real wisdom from Kiyosaki, Graham, Buffett, Chilton, Naval, Lynch &amp; more
+    </p>
+  </div>
+</div>
+
+<script>
+// ============================
+// GAME STATE
+// ============================
+const state = {
+  coins: 0,
+  concepts: new Set(),
+  totalConcepts: 0,
+  chapter: 'Prologue',
+  inventory: [],
+  quizScore: 0,
+  marketWins: 0,
+  sortScore: 0,
+  formulaAttempts: 0,
+};
+
+const ALL_CONCEPTS = [
+  'Asset vs Liability', 'Cash Flow Quadrant', 'Financial Literacy',
+  'The Rat Race', 'Compound Interest', 'The 10% Solution',
+  'Emergency Fund', 'Tax Efficiency', 'Margin of Safety',
+  'Mr. Market', 'Value Investing', 'Intrinsic Value',
+  'Circle of Competence', 'Diversification', 'Index Funds',
+  'Dollar-Cost Averaging', 'The 4% Rule', 'Frugality',
+  'Savings Rate', 'Lifestyle Inflation', 'Equity',
+  'Leverage', 'Specific Knowledge', 'Long-term Thinking',
+  'Financial Independence', 'Risk Management', 'The Magic Formula',
+  'Growth at a Reasonable Price', 'Invest in What You Know',
+  'Patience & Discipline'
+];
+
+// ============================
+// HUD
+// ============================
+function updateHUD() {
+  document.getElementById('coin-count').textContent = state.coins;
+  document.getElementById('concept-count').textContent = state.concepts.size;
+  document.getElementById('concept-total').textContent = ALL_CONCEPTS.length;
+  document.getElementById('chapter-name').textContent = state.chapter;
+  const pct = Math.round((state.concepts.size / ALL_CONCEPTS.length) * 100);
+  document.getElementById('concept-fill').style.width = pct + '%';
+}
+
+function showCoins(n) {
+  state.coins += n;
+  updateHUD();
+  showPopup('+' + n + ' 💰');
+}
+
+function learnConcept(name) {
+  if (!state.concepts.has(name)) {
+    state.concepts.add(name);
+    updateHUD();
+    return true;
+  }
+  return false;
+}
+
+function showPopup(text) {
+  const el = document.getElementById('score-popup');
+  el.textContent = text;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 800);
+}
+
+function spawnConfetti() {
+  const colors = ['#FFD700','#E74C3C','#3498DB','#2ECC71','#9B59B6','#E67E22'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.top = '-10px';
+    c.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+    c.style.width = (6+Math.random()*8)+'px';
+    c.style.height = (6+Math.random()*8)+'px';
+    document.body.appendChild(c);
+    const dur = 1000 + Math.random()*2000;
+    c.animate([
+      { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+      { transform: `translateY(${window.innerHeight+20}px) rotate(${360+Math.random()*720}deg)`, opacity: 0 }
+    ], { duration: dur, easing: 'cubic-bezier(.25,.46,.45,.94)' })
+    .onfinish = () => c.remove();
+  }
+}
+
+// ============================
+// SCENE RENDERING
+// ============================
+function renderScene(scene) {
+  const container = document.getElementById('game-container');
+  container.innerHTML = '';
+
+  // Scene title
+  const titleEl = document.createElement('div');
+  titleEl.className = 'scene-title';
+  titleEl.textContent = scene.title || '';
+  container.appendChild(titleEl);
+
+  // Narrative / dialogue
+  if (scene.narrative) {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    const narr = document.createElement('div');
+    narr.className = 'speech-bubble narrator';
+    narr.innerHTML = scene.narrative;
+    card.appendChild(narr);
+    container.appendChild(card);
+  }
+
+  // Character dialogue
+  if (scene.dialogue) {
+    scene.dialogue.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'scene-card';
+      // Header
+      const hdr = document.createElement('div');
+      hdr.className = 'char-header';
+      hdr.innerHTML = `
+        <div class="char-avatar" style="background:${d.color||'#eee'}">${d.emoji||'🗣️'}</div>
+        <div>
+          <div class="char-name">${d.name}</div>
+          <div class="char-title">${d.title||''}</div>
+        </div>`;
+      card.appendChild(hdr);
+      // Bubble
+      const bubble = document.createElement('div');
+      bubble.className = 'speech-bubble';
+      bubble.innerHTML = d.text;
+      card.appendChild(bubble);
+      container.appendChild(card);
+    });
+  }
+
+  // Comic strip
+  if (scene.comic) {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    const strip = document.createElement('div');
+    strip.className = 'comic-strip';
+    scene.comic.forEach(p => {
+      const panel = document.createElement('div');
+      panel.className = 'comic-panel';
+      panel.innerHTML = `<div class="panel-emoji">${p.emoji}</div><div>${p.text}</div>`;
+      strip.appendChild(panel);
+    });
+    card.appendChild(strip);
+    container.appendChild(card);
+  }
+
+  // Explanation box
+  if (scene.explain) {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    const box = document.createElement('div');
+    box.className = 'explain-box';
+    box.innerHTML = scene.explain;
+    card.appendChild(box);
+    container.appendChild(card);
+  }
+
+  // Concept badges
+  if (scene.concepts) {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    card.style.textAlign = 'center';
+    scene.concepts.forEach(c => {
+      if (learnConcept(c)) {
+        const badge = document.createElement('span');
+        badge.className = 'concept-badge';
+        badge.textContent = '🎓 ' + c;
+        card.appendChild(badge);
+      }
+    });
+    container.appendChild(card);
+  }
+
+  // Mini-game
+  if (scene.miniGame) {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    const mg = document.createElement('div');
+    mg.className = 'mini-game';
+    mg.innerHTML = `<h3>${scene.miniGame.title}</h3>`;
+    mg.innerHTML += `<p style="font-size:13px;margin-bottom:8px;">${scene.miniGame.desc||''}</p>`;
+    card.appendChild(mg);
+    container.appendChild(card);
+    scene.miniGame.build(mg);
+  }
+
+  // Choices
+  if (scene.choices) {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    const choicesDiv = document.createElement('div');
+    choicesDiv.className = 'choices';
+    scene.choices.forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<span class="choice-icon">${ch.icon||'👉'}</span>${ch.text}`;
+      btn.onclick = () => {
+        if (ch.coins) showCoins(ch.coins);
+        if (ch.concept) learnConcept(ch.concept);
+        if (ch.next) goToScene(ch.next);
+        else if (ch.action) ch.action();
+      };
+      choicesDiv.appendChild(btn);
+    });
+    card.appendChild(choicesDiv);
+    container.appendChild(card);
+  }
+}
+
+function goToScene(sceneId) {
+  const scene = SCENES[sceneId];
+  if (!scene) { console.error('Scene not found:', sceneId); return; }
+  if (scene.chapter) state.chapter = scene.chapter;
+  updateHUD();
+  renderScene(scene);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================
+// START GAME
+// ============================
+function startGame() {
+  document.getElementById('hud').style.display = 'flex';
+  updateHUD();
+  goToScene('prologue');
+}
+
+// ============================
+// SCENES
+// ============================
+const SCENES = {
+
+// ---------- PROLOGUE ----------
+prologue: {
+  title: '🌅 The Ordinary Beginning',
+  chapter: 'Prologue',
+  narrative: `You wake up on a Monday morning. Your alarm screams. You hit snooze three times. You scroll through your phone and see your bank account balance: <strong>$47.32</strong>.<br><br>
+  Your fridge contains: half a bottle of hot sauce and a lemon that's developing its own consciousness.<br><br>
+  Then — <strong>a golden envelope</strong> materializes on your nightstand. It glows. It hums. It smells like... money.`,
+  dialogue: [
+    {
+      emoji: '✉️', color: '#FFF9C4', name: 'Mysterious Letter', title: 'Glows suspiciously',
+      text: `<em>"Dear Future Millionaire (yes, that's you),</em><br><br>
+      <em>You have been selected for Escape the Rat Race — a journey through the financial dimensions where the greatest money minds in history live.</em><br><br>
+      <em>Along the way, you'll learn secrets that schools don't teach. You'll catch Assets like Pokémon. You'll battle Mr. Market himself.</em><br><br>
+      <em>Are you ready to escape the Rat Race?</em>"</em>`
+    }
+  ],
+  choices: [
+    { icon: '🚀', text: '"YES! My bank account and I are DONE!"', next: 'meet_buffett' },
+    { icon: '🤔', text: '"What\'s the return on investment?"', coins: 5, next: 'meet_buffett' }
+  ]
+},
+
+// ---------- CHAPTER 1: MEET WARREN ----------
+meet_buffett: {
+  title: '🍿 The Oracle of Omaha\'s Basement',
+  chapter: 'Chapter 1: The Wizard of Value',
+  narrative: `You open the golden envelope and — <strong>WHOOSH!</strong> — you're sucked through a portal made of Coca-Cola bottles and Apple stock certificates.<br><br>
+  You land in a cozy basement. Popcorn everywhere. A 90-year-old man in a suit is watching a baseball game and eating a whoopee pie.`,
+  dialogue: [
+    {
+      emoji: '🧔', color: '#FFCCBC', name: 'Warren Buffett', title: 'The Oracle of Omaha · Net Worth: More than your GDP',
+      text: `<strong>"Ah, a new adventurer! Welcome to my lair."</strong><br><br>
+      He gestures to a whiteboard covered in formulas. Next to it: a case of Cherry Coke.<br><br>
+      <strong>"Before we begin, let me tell you the most important rule in investing —"</strong>`
+    }
+  ],
+  choices: [
+    { icon: '👂', text: '"Tell me, oh wise one!"', next: 'buffett_rule1' },
+    { icon: '🥤', text: '"Is the rule about the Cherry Coke?"', coins: 3, next: 'buffett_rule1' }
+  ]
+},
+
+buffett_rule1: {
+  title: '📜 Rule #1 and #2',
+  dialogue: [
+    {
+      emoji: '🧔', color: '#FFCCBC', name: 'Warren Buffett', title: 'Still eating that whoopee pie',
+      text: `<strong>"Rule Number 1: Never lose money."</strong><br><br>
+      <strong>"Rule Number 2: Never forget Rule Number 1."</strong><br><br>
+      He winks. <strong>"It sounds simple, but most people treat the stock market like a casino. They're gambling, not investing."</strong><br><br>
+      He pulls out a drawing of a seesaw. On one side: a piggy bank. On the other: a volcano.<br><br>
+      <strong>"Investing is about protecting what you have while growing it slowly. Like a snowball rolling down a very long hill."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Risk Management</strong> — Warren Buffett's entire philosophy starts with NOT LOSING money. If you avoid big losses, small gains compound into huge wealth over time. It's not about getting rich quick — it's about NOT getting poor quick.`,
+  concepts: ['Risk Management'],
+  choices: [
+    { icon: '🏔️', text: '"That snowball analogy is genius!"', coins: 5, next: 'buffett_rule2' },
+    { icon: '🎰', text: '"So... I should NOT day trade crypto at 3am?"', coins: 10, next: 'buffett_rule2' }
+  ]
+},
+
+buffett_rule2: {
+  title: '🏔️ The Long Hill',
+  dialogue: [
+    {
+      emoji: '🧔', color: '#FFCCBC', name: 'Warren Buffett', title: 'Pulls out a whiteboard',
+      text: `<strong>"You see, most people want to get rich overnight. But real wealth is built over decades."</strong><br><br>
+      He draws a line going slowly up, then up more, then EXPONENTIALLY up.<br><br>
+      <strong>"This is the power of compound returns. $100 invested at age 25 is worth MORE than $1,000 invested at age 50. Time is your greatest weapon."</strong><br><br>
+      He slides you a Cherry Coke. <strong>"Now, your first real test awaits you in Financial Literacy Island. But first —"</strong>`
+    }
+  ],
+  explain: `💡 <strong>Long-term Thinking</strong> — The stock market averages about 10% return per year. Start early, stay invested, and compound does the heavy lifting. A 25-year-old who invests $200/month for 40 years ends up with ~$1.2M (at 10%). The same person starting at 35? Only ~$460K. <strong>Time beats timing.</strong>`,
+  concepts: ['Long-term Thinking'],
+  choices: [
+    { icon: '🗺️', text: '"Send me to Financial Literacy Island!"', next: 'island_intro' },
+    { icon: '🧠', text: '"Wait, can you explain compound interest again?"', next: 'compound_explain' }
+  ]
+},
+
+compound_explain: {
+  title: '⚡ The Snowball Effect',
+  dialogue: [
+    {
+      emoji: '🧔', color: '#FFCCBC', name: 'Warren Buffett', title: 'Whiteboard warrior',
+      text: `<strong>"Imagine you plant a money tree. Year 1: it grows 10 apples. Year 2: each apple grows into a branch that produces 10 MORE apples. That's 100 apples. Year 3: 1,000 apples. Year 4: 10,000."</strong><br><br>
+      He pauses dramatically.<br><br>
+      <strong>"Albert Einstein called compound interest the eighth wonder of the world. He said: 'He who understands it, earns it. He who doesn't... pays it.'"</strong><br><br>
+      <strong>"Credit card debt? That's compound interest working AGAINST you. Investments? That's compound interest working FOR you. Same math, opposite directions."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Compound Interest</strong> — $10,000 at 8% for 40 years = <strong>$106,000</strong>. The same $10,000 at 8% for 20 years = only <strong>$46,000</strong>. That's why starting early matters MORE than investing more money later. Your future self will thank you.`,
+  concepts: ['Compound Interest'],
+  choices: [
+    { icon: '🌴', text: '"I GET IT! Off to the island!"', coins: 10, next: 'island_intro' }
+  ]
+},
+
+// ---------- CHAPTER 2: FINANCIAL LITERACY ISLAND ----------
+island_intro: {
+  title: '🏝️ Financial Literacy Island',
+  chapter: 'Chapter 2: Rich Dad\'s Island',
+  narrative: `You arrive on a tropical beach. The sand is made of gold coins. The palm trees have dollar bills for leaves.<br><br>
+  A man in a white suit and sunglasses is driving a toy Lamborghini (it goes 15 mph). He's towing a real Rolls-Royce behind it like a trailer.`,
+  dialogue: [
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Robert Kiyosaki · Financial Literacy Guru · Lives in a volcano-shaped house',
+      text: `<strong>"Aloha, future millionaire! I'm Rich Dad. Not Poor Dad — he's still working 9-to-5. Boring!"</strong><br><br>
+      He hops off the toy Lambo and hands you a clipboard.<br><br>
+      <strong>"Before you can build wealth, you need FINANCIAL LITERACY. That means understanding how money WORKS. Most people think 'make more money' is the answer. WRONG!"</strong><br><br>
+      He slams his hand on the clipboard. Dollar bills fly off the palm trees.<br><br>
+      <strong>"The rich don't work for money. MONEY works for them. But first, you need to learn the difference between an ASSET and a LIABILITY."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Financial Literacy</strong> — Understanding how money works is more important than how much you earn. The rich focus on building assets (things that put money IN your pocket) and avoiding liabilities (things that take money OUT). This is the foundation of everything else.`,
+  concepts: ['Financial Literacy'],
+  choices: [
+    { icon: '📋', text: '"Teach me about assets and liabilities!"', next: 'asset_game_intro' },
+    { icon: '🚗', text: '"Is that a toy Lamborghini?!"', coins: 5, next: 'asset_game_intro' }
+  ]
+},
+
+asset_game_intro: {
+  title: '🎮 Mini-Game: Asset or Liability?',
+  narrative: `<strong>Rich Dad:</strong> "Time for your first challenge! I'm going to throw items at you. Sort them into ASSETS (puts money in your pocket) or LIABILITIES (takes money out). Get 6 out of 8 and you pass!"`,
+  miniGame: {
+    title: '🎯 Asset Catch!',
+    desc: 'Tap each item to sort it. Green = Asset, Red = Liability.',
+    build: function(container) {
+      const items = [
+        { name: '🏠 Rental House', isAsset: true },
+        { name: '🚗 New Sports Car', isAsset: false },
+        { name: '📈 Stock Portfolio', isAsset: true },
+        { name: '💳 Credit Card Debt', isAsset: false },
+        { name: '📚 Book that earns royalties', isAsset: true },
+        { name: '🏡 Your Mortgage', isAsset: false },
+        { name: '💻 App that makes money', isAsset: true },
+        { name: '📱 Latest iPhone', isAsset: false },
+      ];
+      container.innerHTML = '<h3>🎯 Asset or Liability Sort!</h3><p style="font-size:13px;">Tap the correct category for each item.</p>';
+      let idx = 0;
+      let score = 0;
+      const itemArea = document.createElement('div');
+      itemArea.style.cssText = 'margin:16px 0;font-size:24px;font-weight:bold;min-height:60px;display:flex;align-items:center;justify-content:center;';
+      const btnArea = document.createElement('div');
+      btnArea.style.cssText = 'display:flex;gap:12px;justify-content:center;flex-wrap:wrap;';
+      const scoreArea = document.createElement('div');
+      scoreArea.style.cssText = 'margin-top:12px;font-size:14px;';
+
+      function showItem() {
+        if (idx >= items.length) {
+          itemArea.textContent = score >= 6 ? '🎉 PASS! You\'re financially literate!' : '😅 Keep learning! Try again!';
+          btnArea.innerHTML = '';
+          scoreArea.textContent = `Score: ${score}/${items.length}`;
+          if (score >= 6) {
+            state.sortScore = score;
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'choice-btn';
+            nextBtn.style.marginTop = '12px';
+            nextBtn.innerHTML = '<span class="choice-icon">✅</span>Continue the adventure!';
+            nextBtn.onclick = () => goToScene('asset_result');
+            btnArea.appendChild(nextBtn);
+          } else {
+            const retryBtn = document.createElement('button');
+            retryBtn.className = 'choice-btn';
+            retryBtn.style.marginTop = '12px';
+            retryBtn.innerHTML = '<span class="choice-icon">🔄</span>Try again!';
+            retryBtn.onclick = () => { idx = 0; score = 0; showItem(); };
+            btnArea.appendChild(retryBtn);
+          }
+          return;
+        }
+        itemArea.textContent = items[idx].name;
+        btnArea.innerHTML = '';
+        scoreArea.textContent = `Score: ${score}/${items.length} · Item ${idx+1} of ${items.length}`;
+        ['asset', 'liability'].forEach(type => {
+          const b = document.createElement('button');
+          b.className = 'choice-btn';
+          b.style.flex = '1';
+          b.style.justifyContent = 'center';
+          b.innerHTML = type === 'asset' ? '💚 ASSET' : '❤️ LIABILITY';
+          b.onclick = () => {
+            const correct = (type === 'asset') === items[idx].isAsset;
+            if (correct) score++;
+            idx++;
+            showItem();
+          };
+          btnArea.appendChild(b);
+        });
+      }
+      container.appendChild(itemArea);
+      container.appendChild(btnArea);
+      container.appendChild(scoreArea);
+      showItem();
+    }
+  }
+},
+
+asset_result: {
+  title: '✅ Asset Test Complete!',
+  dialogue: [
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Proud like a father',
+      text: `<strong>"Excellent! You understand the most fundamental concept in wealth building!"</strong><br><br>
+      He pulls out a giant flowchart drawn on a surfboard.<br><br>
+      <strong>"Now let me show you THE CASH FLOW QUADRANT. This is the map to financial freedom."</strong>`
+    }
+  ],
+  concepts: ['Asset vs Liability'],
+  choices: [
+    { icon: '🗺️', text: '"Show me the Cash Flow Quadrant!"', coins: 10, next: 'quadrant_intro' }
+  ]
+},
+
+quadrant_intro: {
+  title: '📊 The Cash Flow Quadrant',
+  dialogue: [
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Surfboard flowchart presenter',
+      text: `<strong>"Every person on earth falls into one of four boxes:"</strong>`
+    }
+  ],
+  comic: [
+    { emoji: '👨‍💼', text: '<strong>E</strong> — Employee<br>Works for money. Trades time for dollars.' },
+    { emoji: '💼', text: '<strong>S</strong> — Self-Employed<br>Owns a job. Still trading time for money.' },
+    { emoji: '🏢', text: '<strong>B</strong> — Business Owner<br>Builds systems. Money works WITHOUT them.' },
+    { emoji: '💰', text: '<strong>I</strong> — Investor<br>Money makes more money. Financial freedom!' }
+  ],
+  explain: `💡 <strong>Cash Flow Quadrant</strong> — The first quadrants (E/S) = you work for money. The last two quadrants (B/I) = money works for you. The goal is to move to the Business Owner and Investor (B/I) quadrants. Employees trade time for money. Business owners build systems. Investors make money work for them. <strong>You can't get rich renting out your time.</strong>`,
+  concepts: ['Cash Flow Quadrant'],
+  choices: [
+    { icon: '🐀', text: '"So I\'m currently in the Rat Race?"', next: 'rat_race' },
+    { icon: '🚀', text: '"How do I move to the right side?"', coins: 5, next: 'rat_race' }
+  ]
+},
+
+rat_race: {
+  title: '🐀 The Rat Race',
+  dialogue: [
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Points to a hamster wheel',
+      text: `<strong>"The Rat Race is this: you work, you get paid, you pay bills, you're broke again. Repeat. Forever."</strong><br><br>
+      He draws a hamster wheel. Inside it: a stick figure named "You."<br><br>
+      <strong>"Get a raise? Congratulations! Now you have MORE bills. Buy a bigger house? Now you need a better car. New car? Now you need a vacation. VACATION? Now you need credit card debt."</strong><br><br>
+      He shudders. <strong>"This is called LIFESTYLE INFLATION. It's the silent wealth killer."</strong>`
+    }
+  ],
+  explain: `💡 <strong>The Rat Race</strong> — Work → Get Paid → Pay Bills → Broke → Work again. The trap: when your income goes up, your spending goes up too. <strong>Lifestyle Inflation</strong> is when you upgrade your lifestyle every time you get a raise. The solution? Keep your living expenses LOW and invest the difference.`,
+  concepts: ['The Rat Race', 'Lifestyle Inflation'],
+  choices: [
+    { icon: '🚪', text: '"I\'m breaking FREE of this cycle!"', coins: 10, next: 'island_exit' }
+  ]
+},
+
+island_exit: {
+  title: '🌊 Departing Financial Literacy Island',
+  narrative: `Rich Dad hands you a golden compass that points toward "Wealth."<br><br>
+<strong>"Your next stop: The Valley of Value Investing. Benjamin Graham and his moody sidekick Mr. Market are waiting."</strong><br><br>
+The golden compass starts spinning. The toy Lamborghini honks you off.`,
+  dialogue: [
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Waving from the beach',
+      text: `<strong>"Remember: the richest people don't have the most money — they have the most ASSETS. Keep building!"</strong>`
+    }
+  ],
+  choices: [
+    { icon: '🌀', text: 'Jump through the next portal...', next: 'valley_intro' }
+  ]
+},
+
+// ---------- CHAPTER 3: VALLEY OF VALUE INVESTING ----------
+valley_intro: {
+  title: '⛰️ The Valley of Value Investing',
+  chapter: 'Chapter 3: The Value Investing Cave',
+  narrative: `You materialize in a misty valley. Stone cottages dot the hillsides. Every window has a stock ticker running across it.<br><br>
+  An old professor in tweed is sitting on a rock, reading a book. Next to him, a man in a rainbow-colored suit is doing interpretive dance.`,
+  dialogue: [
+    {
+      emoji: '📚', color: '#BBDEFB', name: 'Benjamin Graham', title: 'The Father of Value Investing · Died in 1976 but still the GOAT',
+      text: `<strong>"Ah, a student of investing! Welcome. I am Benjamin Graham, and this..."</strong> — he gestures at the dancing man — <strong>"is Mr. Market. He's... emotional."</strong>`
+    },
+    {
+      emoji: '🎩', color: '#F8BBD0', name: 'Mr. Market', title: 'The Stock Market Personified · Has the emotional stability of a toddler',
+      text: `<strong>"I'M AMAZING! BUY EVERYTHING! EVERYTHING IS GOING TO THE MOON! 🚀🚀🚀"</strong><br><br>
+      ...three seconds later...<br><br>
+      <strong>"EVERYTHING IS CRASHING! SELL EVERYTHING! THE END IS NIGH! 😱😱😱"</strong><br><br>
+      He starts crying. Then laughing. Then doing cartwheels.`
+    },
+    {
+      emoji: '📚', color: '#BBDEFB', name: 'Benjamin Graham', title: 'Sighs',
+      text: `<strong>"See? This is exactly why you should NOT listen to him. Mr. Market is your SERVANT, not your MASTER. You use his mood swings to your advantage."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Mr. Market</strong> — Benjamin Graham's famous allegory: imagine you're partners in a business with a guy named Mr. Market. Every day he quotes a price at which he'll buy your shares or sell you his. Some days he's euphoric (offers crazy high prices). Other days he's depressed (offers rock-bottom prices). <strong>The smart investor buys when Mr. Market is scared and sells when he's greedy.</strong> Don't let his emotions control YOU.`,
+  concepts: ['Mr. Market'],
+  choices: [
+    { icon: '📖', text: '"Teach me Value Investing, Professor!"', next: 'value_investing' },
+    { icon: '💃', text: '"Mr. Market\'s dance is... concerning."', coins: 5, next: 'value_investing' }
+  ]
+},
+
+value_investing: {
+  title: '📖 The Art of Value Investing',
+  dialogue: [
+    {
+      emoji: '📚', color: '#BBDEFB', name: 'Benjamin Graham', title: 'Pulls out a magnifying glass',
+      text: `<strong>"Value investing is simple in theory: buy something for LESS than it's worth."</strong><br><br>
+      He holds up a $20 bill.<br><br>
+      <strong>"If I offered you this $20 bill for only $15, would you take it?"</strong><br><br>
+      <strong>"Of course! You'd get $20 worth of value for only $15. Value investing is the exact same idea — but with businesses instead of dollar bills."</strong><br><br>
+      <strong>"The key is knowing the INTRINSIC VALUE — what a company is REALLY worth — versus its MARKET PRICE — what people are currently willing to pay."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Value Investing</strong> — Buy businesses for less than they're worth. If a company is truly worth $100 per share but trading at $60, you have a great deal. <strong>Intrinsic Value</strong> is the real worth of a business (based on earnings, assets, cash flow). <strong>Market Price</strong> is what people are willing to pay right now (which is often wrong). The gap between the two is where profits are made.`,
+  concepts: ['Value Investing', 'Intrinsic Value'],
+  choices: [
+    { icon: '🛡️', text: '"What about this Margin of Safety you mention?"', next: 'margin_safety' },
+    { icon: '🧮', text: '"How do I calculate intrinsic value?"', coins: 5, next: 'margin_safety' }
+  ]
+},
+
+margin_safety: {
+  title: '🛡️ The Margin of Safety',
+  dialogue: [
+    {
+      emoji: '📚', color: '#BBDEFB', name: 'Benjamin Graham', title: 'Pulls out an engineering textbook',
+      text: `<strong>"Engineers build bridges that can hold 30,000 pounds when cars only weigh 5,000. That extra capacity? That's a margin of safety."</strong><br><br>
+      He draws a bridge. On it: a tiny car. The bridge is MASSIVE.<br><br>
+      <strong>"In investing, your margin of safety is the gap between what you PAY and what something is WORTH. If a company is worth $100 and you buy at $60, your margin of safety is 40%."</strong><br><br>
+      <strong>"Why does this matter? Because you might be WRONG about your valuation. The economy might crash. The company might have a bad year. The margin of safety protects you from being wrong."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Margin of Safety</strong> — Never pay full price. If you think a stock is worth $100, buy it at $60 or $70. That 30-40% cushion protects you if your analysis is slightly off. Benjamin Graham called this "the essence of investing." It's the difference between investing and gambling.`,
+  concepts: ['Margin of Safety'],
+  choices: [
+    { icon: '🎮', text: '"I\'m ready for the Mr. Market Challenge!"', next: 'market_game' },
+    { icon: '📐', text: '"40% cushion — I\'ll remember that!"', coins: 5, next: 'market_game' }
+  ]
+},
+
+market_game: {
+  title: '🎮 Mini-Game: Battle Mr. Market!',
+  narrative: `<strong>Mr. Market:</strong> "OH YOU THINK YOU CAN BEAT ME? I'M THE MARKET! I MOVE BILLIONS!"<br><br>
+<strong>Benjamin Graham:</strong> "Simply decide whether to BUY or SELL based on whether his price is too high or too low. The fair value is $100."`,
+  miniGame: {
+    title: '📊 Beat Mr. Market!',
+    desc: 'Mr. Market will quote 5 prices. The fair value is $100. Buy when cheap (<$90), Sell when expensive (>$110), Hold when fair.',
+    build: function(container) {
+      const prices = [75, 130, 95, 60, 140, 88, 115, 70, 105, 50];
+      const rounds = prices.slice(0, 5);
+      let round = 0;
+      let score = 0;
+      const info = document.createElement('div');
+      info.style.cssText = 'font-size:18px;margin:12px 0;font-weight:bold;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+      const btnArea = document.createElement('div');
+      btnArea.style.cssText = 'display:flex;gap:8px;justify-content:center;flex-wrap:wrap;';
+
+      function showRound() {
+        if (round >= rounds.length) {
+          info.textContent = score >= 3 ? '🎉 You beat Mr. Market!' : '😅 Mr. Market got you this time!';
+          btnArea.innerHTML = '';
+          scoreEl.textContent = `Score: ${score}/${rounds.length}`;
+          const nextBtn = document.createElement('button');
+          nextBtn.className = 'choice-btn';
+          nextBtn.style.marginTop = '12px';
+          nextBtn.innerHTML = '<span class="choice-icon">✅</span>Continue!';
+          nextBtn.onclick = () => goToScene('market_result');
+          btnArea.appendChild(nextBtn);
+          return;
+        }
+        info.textContent = `Mr. Market quotes: $${rounds[round]} · (Fair value: $100)`;
+        scoreEl.textContent = `Round ${round+1}/${rounds.length} · Score: ${score}`;
+        btnArea.innerHTML = '';
+        const actions = [
+          { label: '🟢 BUY (too cheap)', ok: rounds[round] < 90 },
+          { label: '⚪ HOLD (fair price)', ok: rounds[round] >= 90 && rounds[round] <= 110 },
+          { label: '🔴 SELL (too expensive)', ok: rounds[round] > 110 }
+        ];
+        actions.forEach(a => {
+          const b = document.createElement('button');
+          b.className = 'choice-btn';
+          b.style.flex = '1';
+          b.style.justifyContent = 'center';
+          b.style.fontSize = '13px';
+          b.textContent = a.label;
+          b.onclick = () => {
+            if (a.ok) score++;
+            round++;
+            showRound();
+          };
+          btnArea.appendChild(b);
+        });
+      }
+      container.appendChild(info);
+      container.appendChild(scoreEl);
+      container.appendChild(btnArea);
+      showRound();
+    }
+  }
+},
+
+market_result: {
+  title: '🏆 Mr. Market Defeated!',
+  dialogue: [
+    {
+      emoji: '🎩', color: '#F8BBD0', name: 'Mr. Market', title: 'Sulking in the corner',
+      text: `<strong>"You... you didn't even look at my prices! You just compared them to VALUE! That's CHEATING!"</strong><br><br>
+      He throws a tantrum and hides behind Benjamin Graham.`
+    },
+    {
+      emoji: '📚', color: '#BBDEFB', name: 'Benjamin Graham', title: 'Chuckles',
+      text: `<strong>"Not bad at all. Remember: the market is a SERVANT. Use his mood swings. Don't become one."</strong><br><br>
+      <strong>"Before you go, one more lesson: DIVERSIFICATION. Don't put all your eggs in one basket."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Diversification</strong> — Warren Buffett said: "Diversification is protection against ignorance." If you own only one stock and that company goes bankrupt, you lose everything. If you own 50 stocks across different industries, one bankruptcy barely matters. <strong>Index funds</strong> are the ultimate diversification tool — one purchase gives you hundreds of companies.`,
+  concepts: ['Diversification'],
+  choices: [
+    { icon: '🧺', text: '"Egg safety — noted! Where to next?"', coins: 15, next: 'valley_exit' }
+  ]
+},
+
+valley_exit: {
+  title: '🌄 Departing the Valley',
+  narrative: `Benjamin Graham hands you a leather-bound copy of "The Intelligent Investor." Mr. Market is still crying in the background.<br><br>
+<strong>"Your next stop: The Wealthy Barber's Village. Roy has some very practical advice about saving money."</strong>`,
+  choices: [
+    { icon: '🌀', text: 'Through the portal...', next: 'barber_intro' }
+  ]
+},
+
+// ---------- CHAPTER 4: THE WEALTHY BARBER'S VILLAGE ----------
+barber_intro: {
+  title: '💈 The Wealthy Barber\'s Village',
+  chapter: 'Chapter 4: The Village of Smart Money',
+  narrative: `You arrive in a quaint village. Cobblestone streets. Flower boxes. A barber shop with a sign that reads: <strong>"ROY — I'll make you handsome AND wealthy."</strong><br><br>
+  Inside, a cheerful man with a mustache is giving a haircut while simultaneously explaining compound interest to his client.`,
+  dialogue: [
+    {
+      emoji: '💈', color: '#E8F5E9', name: 'Roy the Wealthy Barber', title: 'David Chilton\'s creation · Can cut hair AND your tax bill',
+      text: `<strong>"Ah, a new customer! Sit sit sit! Today we're doing TWO things: a trim AND financial education."</strong><br><br>
+      *snip snip snip*<br><br>
+      <strong>"Here's my first rule: SAVE TEN PERCENT OF EVERY DOLLAR YOU EARN. Not when you're rich. Not when you get a raise. START NOW."</strong><br><br>
+      <strong>"I don't care if you make $20,000 or $200,000. Ten percent. Automate it. Pay yourself FIRST, before anyone else gets a cut."</strong>`
+    }
+  ],
+  explain: `💡 <strong>The 10% Solution</strong> — David Chilton's core advice: automatically save and invest 10% of every paycheck. The key word is AUTOMATICALLY. Set it up so the money leaves your account BEFORE you can spend it. If you make $3,000/month, that's $300/month invested. Over 30 years at 8%, that becomes ~$340,000. From just 10%.`,
+  concepts: ['The 10% Solution', 'Savings Rate'],
+  choices: [
+    { icon: '🏦', text: '"What should I do with the 10%?"', next: 'barber_emergency' },
+    { icon: '✂️', text: '"Can I get the \"financial freedom\" haircut?"', coins: 5, next: 'barber_emergency' }
+  ]
+},
+
+barber_emergency: {
+  title: '🏦 The Emergency Fund',
+  dialogue: [
+    {
+      emoji: '💈', color: '#E8F5E9', name: 'Roy the Wealthy Barber', title: 'Still cutting hair',
+      text: `<strong>"Before you invest a single penny, you need an EMERGENCY FUND. Six months of living expenses, sitting in a savings account."</strong><br><br>
+      He holds up a mirror. In it, you see yourself: car breaks down, medical bill arrives, you lose your job.<br><br>
+      <strong>"Without an emergency fund, one bad month sends you into credit card debt. WITH an emergency fund, life throws punches and you DON'T FLINCH."</strong><br><br>
+      *snip snip*<br><br>
+      <strong>"After that? Index funds. Low-cost, diversified, boring. Boring is GOOD in investing."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Emergency Fund</strong> — 3-6 months of essential expenses in a high-yield savings account. This is your financial airbag. Without it, any emergency (car repair, job loss, medical bill) forces you into debt or makes you sell investments at the wrong time. <strong>Index Funds</strong> are baskets of hundreds of stocks. One purchase = instant diversification. Low fees. Historically return ~10% per year. Warren Buffett recommends them for 95% of investors.`,
+  concepts: ['Emergency Fund', 'Index Funds'],
+  choices: [
+    { icon: '🎮', text: '"Let me try the Savings Rate Challenge!"', next: 'savings_game' },
+    { icon: '📊', text: '"Tell me more about index funds!"', coins: 5, next: 'savings_game' }
+  ]
+},
+
+savings_game: {
+  title: '🎮 Mini-Game: The Savings Puzzle',
+  narrative: `<strong>Roy:</strong> "Let's see if you can solve some financial puzzles! Three questions — get them right and I'll give you the secret formula!"`,
+  miniGame: {
+    title: '🧩 Professor Graham\'s Financial Puzzles',
+    desc: 'Three questions. Choose the best answer.',
+    build: function(container) {
+      const puzzles = [
+        {
+          q: 'You earn $5,000/month and spend $4,500. What\'s your savings rate?',
+          opts: ['10%', '20%', '50%', '90%'],
+          correct: 0,
+          explain: '$500/$5,000 = 10%. Aim for at least 10-20%!'
+        },
+        {
+          q: 'Which is better for building wealth?',
+          opts: ['Spending less than you earn', 'Earning a huge salary', 'Winning the lottery', 'Getting a credit card'],
+          correct: 0,
+          explain: 'The Millionaire Next Door proved: savings rate matters more than income level.'
+        },
+        {
+          q: 'You invest $200/month at 10% return. After 40 years, you\'ll have approximately:',
+          opts: ['$20,000', '$100,000', '~$1,000,000', '$10,000,000'],
+          correct: 2,
+          explain: '$200/month × 40 years at 10% ≈ $1M. That\'s the power of compound interest!'
+        }
+      ];
+      let idx = 0;
+      let score = 0;
+      const qArea = document.createElement('div');
+      qArea.style.cssText = 'text-align:left;margin:12px 0;font-size:15px;font-weight:bold;';
+      const optsArea = document.createElement('div');
+      optsArea.className = 'puzzle-options';
+      const explArea = document.createElement('div');
+      explArea.style.cssText = 'font-size:13px;margin:8px 0;color:#666;min-height:20px;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+
+      function showPuzzle() {
+        if (idx >= puzzles.length) {
+          qArea.textContent = score >= 2 ? '🎉 You\'re financially literate!' : '📚 Keep studying!';
+          optsArea.innerHTML = '';
+          explArea.textContent = `Final Score: ${score}/${puzzles.length}`;
+          scoreEl.textContent = '';
+          const nextBtn = document.createElement('button');
+          nextBtn.className = 'choice-btn';
+          nextBtn.style.marginTop = '12px';
+          nextBtn.innerHTML = '<span class="choice-icon">✅</span>Continue!';
+          nextBtn.onclick = () => goToScene('barber_result');
+          optsArea.appendChild(nextBtn);
+          return;
+        }
+        qArea.textContent = `Q${idx+1}: ${puzzles[idx].q}`;
+        explArea.textContent = '';
+        scoreEl.textContent = `Score: ${score}/${puzzles.length}`;
+        optsArea.innerHTML = '';
+        puzzles[idx].opts.forEach((opt, i) => {
+          const b = document.createElement('button');
+          b.className = 'puzzle-opt';
+          b.textContent = opt;
+          b.onclick = () => {
+            optsArea.querySelectorAll('.puzzle-opt').forEach((bb,j) => {
+              bb.onclick = null;
+              if (j === puzzles[idx].correct) bb.classList.add('correct');
+              if (i === j && i !== puzzles[idx].correct) bb.classList.add('wrong');
+            });
+            if (i === puzzles[idx].correct) score++;
+            explArea.textContent = '💡 ' + puzzles[idx].explain;
+            setTimeout(() => { idx++; showPuzzle(); }, 2000);
+          };
+          optsArea.appendChild(b);
+        });
+      }
+      container.appendChild(qArea);
+      container.appendChild(optsArea);
+      container.appendChild(explArea);
+      container.appendChild(scoreEl);
+      showPuzzle();
+    }
+  }
+},
+
+barber_result: {
+  title: '💈 Fresh Haircut, Fresh Knowledge',
+  dialogue: [
+    {
+      emoji: '💈', color: '#E8F5E9', name: 'Roy the Wealthy Barber', title: 'Hands you a mirror',
+      text: `<strong>"Look at you! Great haircut AND financial knowledge. You're basically a millionaire in training."</strong><br><br>
+      He hands you a receipt. Written on the back:<br><br>
+      <strong>"Remember: the wealthy aren't those who earn the most. They're those who KEEP the most. Save 10%. Build your emergency fund. Invest in index funds. Stay frugal."</strong><br><br>
+      *snip snip* <strong>"That'll be $20. Oh wait — education is free. Just pay it forward."</strong>`
+    }
+  ],
+  concepts: ['Frugality'],
+  choices: [
+    { icon: '🌀', text: '"Thanks, Roy! On to the next adventure!"', coins: 15, next: 'barber_exit' }
+  ]
+},
+
+barber_exit: {
+  title: '🌅 Departing the Village',
+  narrative: `As you leave the village, you notice something: the wealthiest people in town drive the OLDEST cars and live in the SMALLEST houses.<br><br>
+<strong>"That's the Millionaire Next Door effect,"</strong> you whisper to yourself.<br><br>
+A golden portal opens above a flower cart.`,
+  choices: [
+    { icon: '🌀', text: 'Jump!', next: 'millionaire_intro' }
+  ]
+},
+
+// ---------- CHAPTER 5: MILLIONAIRE TOWN ----------
+millionaire_intro: {
+  title: '🏘️ Millionaire Next Door Town',
+  chapter: 'Chapter 5: The Town of Frugal Millionaires',
+  narrative: `You arrive in a perfectly ordinary suburb. White picket fences. Kids on bikes. Nothing fancy.<br><br>
+  A friendly neighbor in a 15-year-old Honda waves at you from his lawn. He's weeding by hand (not hiring anyone). His house looks... normal?`,
+  dialogue: [
+    {
+      emoji: '🏠', color: '#FFF3E0', name: 'Tom Stanley', title: 'Author of The Millionaire Next Door · Studied 1,000+ millionaires',
+      text: `<strong>"Welcome! I'm Tom Stanley. I spent years studying America's wealthy, and here's what I found:"</strong><br><br>
+      He pulls out a chart from his BBQ grill.<br><br>
+      <strong>"Most millionaires DON'T live in mansions. They DON'T drive Ferraris. They DON'T wear Rolex watches."</strong><br><br>
+      <strong>"They drive used cars, live in modest homes, cook at home, and avoid fancy restaurants. Their wealth isn't visible because they don't SPEND it."</strong>`
+    }
+  ],
+  comic: [
+    { emoji: '👔', text: '<strong>What people THINK</strong><br>Mansion + Ferrari + Yacht' },
+    { emoji: '🏠', text: '<strong>Reality</strong><br>Modest house + Honda + Grocery cooking' },
+    { emoji: '💰', text: '<strong>High income</strong> ≠ <strong>High wealth</strong><br>If you spend it all!' },
+    { emoji: '📊', text: '<strong>Savings rate</strong> is the #1 predictor<br>of wealth accumulation' }
+  ],
+  explain: `💡 <strong>Frugality + Savings Rate</strong> — Thomas Stanley studied 1,000+ self-made millionaires. The #1 factor in wealth? NOT income. It's the SAVINGS RATE — the percentage of income you save and invest. A teacher saving 20% of $50K will outwealth a doctor saving 2% of $500K. <strong>Live below your means.</strong>`,
+  concepts: ['Frugality', 'Savings Rate'],
+  choices: [
+    { icon: '🎮', text: '"Let me try the Frugality Challenge!"', next: 'frugal_game' },
+    { emoji: '🤯', text: '"So rich people cook at home?!"', coins: 5, next: 'frugal_game' }
+  ]
+},
+
+frugal_game: {
+  title: '🎮 Mini-Game: Rich or Broke?',
+  narrative: `<strong>Tom Stanley:</strong> "I'll describe a person's habits. Guess if they're building wealth or burning money!"`,
+  miniGame: {
+    title: '🏘️ Rich or Broke?',
+    desc: 'Five profiles. Guess who\'s wealthy and who\'s broke.',
+    build: function(container) {
+      const profiles = [
+        { desc: 'Drives a 12-year-old Toyota. Cooks at home. Wears Gap clothes.', wealthy: true },
+        { desc: 'Leases a new BMW every 2 years. Dines out 5x/week.', wealthy: false },
+        { desc: 'Makes $200K but has $300K in credit card debt.', wealthy: false },
+        { desc: 'Makes $60K, saves 25%, invests in index funds.', wealthy: true },
+        { desc: 'Lives in a mansion, drives a Ferrari, wears a Rolex.', wealthy: false },
+      ];
+      let idx = 0, score = 0;
+      const qArea = document.createElement('div');
+      qArea.style.cssText = 'text-align:left;margin:12px 0;font-size:15px;font-style:italic;min-height:50px;display:flex;align-items:center;justify-content:center;';
+      const btnArea = document.createElement('div');
+      btnArea.style.cssText = 'display:flex;gap:12px;justify-content:center;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+
+      function show() {
+        if (idx >= profiles.length) {
+          qArea.textContent = score >= 3 ? '🎉 You think like a millionaire!' : '📚 Remember: wealth isn\'t what it looks like!';
+          btnArea.innerHTML = '';
+          scoreEl.textContent = `Score: ${score}/${profiles.length}`;
+          const nb = document.createElement('button');
+          nb.className = 'choice-btn';
+          nb.style.marginTop = '12px';
+          nb.innerHTML = '<span class="choice-icon">✅</span>Continue!';
+          nb.onclick = () => goToScene('millionaire_result');
+          btnArea.appendChild(nb);
+          return;
+        }
+        qArea.textContent = `"${profiles[idx].desc}"`;
+        scoreEl.textContent = `Profile ${idx+1}/${profiles.length} · Score: ${score}`;
+        btnArea.innerHTML = '';
+        ['Wealthy ✅', 'Broke ❌'].forEach((label, i) => {
+          const b = document.createElement('button');
+          b.className = 'choice-btn';
+          b.style.flex = '1';
+          b.style.justifyContent = 'center';
+          b.style.fontSize = '14px';
+          b.textContent = label;
+          b.onclick = () => {
+            if ((i === 0) === profiles[idx].wealthy) score++;
+            idx++;
+            show();
+          };
+          btnArea.appendChild(b);
+        });
+      }
+      container.appendChild(qArea);
+      container.appendChild(btnArea);
+      container.appendChild(scoreEl);
+      show();
+    }
+  }
+},
+
+millionaire_result: {
+  title: '🏘️ Millionaire Mindset Achieved',
+  dialogue: [
+    {
+      emoji: '🏠', color: '#FFF3E0', name: 'Tom Stanley', title: 'Hands you a study',
+      text: `<strong>"You've got the mindset! Remember: your WEALTH NUMBER is what matters, not your income number."</strong><br><br>
+      He writes a formula on a napkin:<br><br>
+      <strong>Wealth = (Income − Expenses) × Time × Return Rate</strong><br><br>
+      <strong>"Keep expenses LOW. Let time and returns do the rest."</strong>`
+    }
+  ],
+  concepts: ['Living Below Means'],
+  choices: [
+    { icon: '🌀', text: '"That napkin is worth more than a Rolex!"', coins: 15, next: 'millionaire_exit' }
+  ]
+},
+
+millionaire_exit: {
+  title: '🌅 Departing Millionaire Town',
+  narrative: `As you leave, you notice the richest person in town is watering his garden in flip-flops. His garage contains a bicycle from 1998 and a toolbox.<br><br>
+<strong>"The richest people look the poorest,"</strong> you mutter.<br><br>
+A portal opens above the community garden.`,
+  choices: [
+    { icon: '🌀', text: 'To the Tech Valley...', next: 'naval_intro' }
+  ]
+},
+
+// ---------- CHAPTER 6: NAVAL\'S TECH VALLEY ----------
+naval_intro: {
+  title: '🧘 Naval\'s Tech Valley',
+  chapter: 'Chapter 6: The Valley of Equity & Leverage',
+  narrative: `You arrive in a valley that looks like Silicon Valley meets a meditation retreat. Solar panels on every roof. People coding on laptops under trees. Incense in the air.<br><br>
+  A man in a white t-shirt sits cross-legged on a rock, eyes closed, smiling. A holographic stock portfolio floats above his head, going up.`,
+  dialogue: [
+    {
+      emoji: '🧘', color: '#F3E5F5', name: 'Naval Ravikant', title: 'Angel investor · Philosopher · Can meditate AND make millions simultaneously',
+      text: `<strong>"Ah, you've arrived. I knew you would."</strong><br><br>
+      He doesn't open his eyes.<br><br>
+      <strong>"You want to know the secret to wealth? It's not working harder. It's not a higher salary. It's not even intelligence."</strong><br><br>
+      He opens one eye.<br><br>
+      <strong>"It's three things: EQUITY, LEVERAGE, and SPECIFIC KNOWLEDGE. Let me explain each."</strong>`
+    }
+  ],
+  choices: [
+    { icon: '🏢', text: '"Tell me about Equity!"', next: 'naval_equity' },
+    { icon: '🤔', text: '"Wait, you knew I was coming?"', coins: 3, next: 'naval_equity' }
+  ]
+},
+
+naval_equity: {
+  title: '🏢 Own a Piece of the Pie',
+  dialogue: [
+    {
+      emoji: '🧘', color: '#F3E5F5', name: 'Naval Ravikant', title: 'Opens both eyes now',
+      text: `<strong>"You will NEVER get rich renting out your time."</strong><br><br>
+      He holds up an hourglass.<br><br>
+      <strong>"Time is finite. Even if you charge $1,000/hour, you can only work so many hours. But OWNERSHIP? That's infinite."</strong><br><br>
+      <strong>"When you own equity — a piece of a business — it makes money while you SLEEP. While you EAT. While you WATCH NETFLIX."</strong><br><br>
+      <strong>"That's the difference between WEALTH and MONEY. Wealth is assets that earn while you sleep. Money is just how we transfer wealth."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Equity</strong> — Equity means owning a piece of a business. When you buy stock, you own a tiny piece of that company. When you start a business, you own equity there too. Naval's point: trading time for money has a ceiling (24 hours/day). Owning equity has NO ceiling — your assets work 24/7/365.`,
+  concepts: ['Equity', 'Wealth vs Money'],
+  choices: [
+    { icon: '⚡', text: '"Now tell me about Leverage!"', next: 'naval_leverage' }
+  ]
+},
+
+naval_leverage: {
+  title: '⚡ The Four Types of Leverage',
+  dialogue: [
+    {
+      emoji: '🧘', color: '#F3E5F5', name: 'Naval Ravikant', title: 'Pulls out four fingers',
+      text: `<strong>"Leverage is what multiplies your effort. There are four types:"</strong>`
+    }
+  ],
+  comic: [
+    { emoji: '👥', text: '<strong>Labor</strong><br>Hire people to work for you.<br>(Needs management)' },
+    { emoji: '💰', text: '<strong>Capital</strong><br>Use money to make money.<br>(Needs money first)' },
+    { emoji: '💻', text: '<strong>Code</strong><br>Software works 24/7.<br>(NO permission needed!)' },
+    { emoji: '📺', text: '<strong>Media</strong><br>Content reaches millions.<br>(NO permission needed!)' }
+  ],
+  explain: `💡 <strong>Leverage</strong> — Naval's key insight: labor and capital require other people's permission (you need to hire people or borrow money). But CODE and MEDIA are "new forms of leverage" — anyone with a laptop can write software or create content that works while they sleep. This is why you can get rich building an app or YouTube channel with ZERO employees and ZERO investment.`,
+  concepts: ['Leverage'],
+  choices: [
+    { icon: '🧠', text: '"And Specific Knowledge?"', next: 'naval_specific' }
+  ]
+},
+
+naval_specific: {
+  title: '🧠 Specific Knowledge',
+  dialogue: [
+    {
+      emoji: '🧘', color: '#F3E5F5', name: 'Naval Ravikant', title: 'Gets serious',
+      text: `<strong>"Specific knowledge is skills that are UNIQUE to YOU. Things that feel like PLAY to you but seem like WORK to others."</strong><br><br>
+      <strong>"You can't learn this in school. No one can teach it to you. It comes from following your genuine CURIOSITY."</strong><br><br>
+      <strong>"If you're good at something everyone else can do, you'll be replaced. If you're good at something ONLY you can do, you're irreplaceable."</strong><br><br>
+      He closes his eyes again. <strong>"The formula: Specific Knowledge + Leverage + Equity = Wealth. Now go test your knowledge."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Specific Knowledge</strong> — Skills that are so unique to you that no one can compete. It's at the intersection of your genuine curiosity, natural talents, and what the world values. The key: it should feel like PLAY to you. If it feels like grinding, you won't persist long enough to master it.`,
+  concepts: ['Specific Knowledge'],
+  choices: [
+    { icon: '🎮', text: '"Time for the Leverage Challenge!"', next: 'leverage_game' }
+  ]
+},
+
+leverage_game: {
+  title: '🎮 Mini-Game: Leverage Catch!',
+  narrative: `<strong>Naval:</strong> "I'll toss you different tools. Catch the ones that are LEVERAGE (they multiply your effort). Dodge the ones that aren't."`,
+  miniGame: {
+    title: '⚡ Leverage Ball Catch!',
+    desc: 'Catch the leverage tools! Avoid the non-leverage items!',
+    build: function(container) {
+      const items = [
+        { name: '💻 App', isLeverage: true },
+        { name: '📝 Homework', isLeverage: false },
+        { name: '📺 YouTube Video', isLeverage: true },
+        { name: '🧹 Washing dishes', isLeverage: false },
+        { name: '👥 Team of engineers', isLeverage: true },
+        { name: '🚶 Walking to work', isLeverage: false },
+        { name: '💰 Investment portfolio', isLeverage: true },
+        { name: '📖 Podcast', isLeverage: true },
+      ];
+      let idx = 0, score = 0;
+      const caught = [];
+      const qArea = document.createElement('div');
+      qArea.style.cssText = 'font-size:36px;margin:16px 0;min-height:60px;';
+      const btnArea = document.createElement('div');
+      btnArea.style.cssText = 'display:flex;gap:12px;justify-content:center;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+      const ballGrid = document.createElement('div');
+      ballGrid.className = 'ball-grid';
+
+      function show() {
+        if (idx >= items.length) {
+          qArea.textContent = score >= 5 ? '🎉 Master of Leverage!' : '📚 Remember: leverage = multiplication!';
+          btnArea.innerHTML = '';
+          scoreEl.textContent = `Caught ${score}/${items.length} leverage tools`;
+          const nb = document.createElement('button');
+          nb.className = 'choice-btn';
+          nb.style.marginTop = '12px';
+          nb.innerHTML = '<span class="choice-icon">✅</span>Continue!';
+          nb.onclick = () => goToScene('naval_result');
+          btnArea.appendChild(nb);
+          return;
+        }
+        qArea.textContent = items[idx].name;
+        scoreEl.textContent = `Item ${idx+1}/${items.length}`;
+        btnArea.innerHTML = '';
+        ['⚡ CATCH (Leverage)', '❌ DODGE (Not Leverage)'].forEach((label, i) => {
+          const b = document.createElement('button');
+          b.className = 'choice-btn';
+          b.style.flex = '1';
+          b.style.justifyContent = 'center';
+          b.style.fontSize = '13px';
+          b.textContent = label;
+          b.onclick = () => {
+            if ((i === 0) === items[idx].isLeverage) {
+              score++;
+              const ball = document.createElement('div');
+              ball.className = 'caught-ball';
+              ball.textContent = items[idx].name.split(' ')[0];
+              ball.style.background = '#d4edda';
+              ballGrid.appendChild(ball);
+            } else {
+              const ball = document.createElement('div');
+              ball.className = 'caught-ball';
+              ball.textContent = items[idx].name.split(' ')[0];
+              ball.style.background = '#f8d7da';
+              ballGrid.appendChild(ball);
+            }
+            idx++;
+            show();
+          };
+          btnArea.appendChild(b);
+        });
+      }
+      container.appendChild(qArea);
+      container.appendChild(btnArea);
+      container.appendChild(scoreEl);
+      container.appendChild(ballGrid);
+      show();
+    }
+  }
+},
+
+naval_result: {
+  title: '🧘 Enlightenment Achieved',
+  dialogue: [
+    {
+      emoji: '🧘', color: '#F3E5F5', name: 'Naval Ravikant', title: 'Back to meditation mode',
+      text: `<strong>"You understand the formula now. But wealth is only half the equation."</strong><br><br>
+      He opens his eyes one last time.<br><br>
+      <strong>"The other half is HAPPINESS. You can have all the wealth in the world and be miserable. Or you can be content RIGHT NOW while building wealth for later."</strong><br><br>
+      <strong>"Happiness is a skill. Like anything, you practice it. Remove desire, remove envy, be present. That's the real secret."</strong><br><br>
+      He hands you a small crystal. <strong>"For your next journey. Peter Lynch is waiting."</strong>`
+    }
+  ],
+  concepts: ['Patience & Discipline'],
+  choices: [
+    { icon: '🌀', text: '"Thank you, Naval. Onward!"', coins: 20, next: 'naval_exit' }
+  ]
+},
+
+naval_exit: {
+  title: '🌅 Departing Tech Valley',
+  narrative: `As you leave, you notice the most successful people in the valley aren't the ones working 80-hour weeks. They're the ones who built something ONCE that keeps working forever.<br><br>
+<strong>"Code and media. Permissionless leverage."</strong> You repeat it like a mantra.<br><br>
+The crystal glows. A portal opens.`,
+  choices: [
+    { icon: '🌀', text: 'To Peter Lynch\'s World...', next: 'lynch_intro' }
+  ]
+},
+
+// ---------- CHAPTER 7: PETER LYNCH\'S BACKYARD ----------
+lynch_intro: {
+  title: '🔍 Peter Lynch\'s Backyard',
+  chapter: 'Chapter 7: The Backyard Investor',
+  narrative: `You arrive in a suburban backyard. A man in a sweater vest is grilling hamburgers while reading annual reports.<br><br>
+  His kids are playing in the yard. His dog is chewing on a 10-K filing.`,
+  dialogue: [
+    {
+      emoji: '🔍', color: '#E0F2F1', name: 'Peter Lynch', title: 'Managed the Magellan Fund · 29.2% annual return · Now grills burgers',
+      text: `<strong>"Hey there! Want a burger? Great. Now listen up."</strong><br><br>
+      He flips a patty with one hand and a stock chart with the other.<br><br>
+      <strong>"I made 29.2% per year for 13 years managing $14 billion. How? I invested in what I KNEW."</strong><br><br>
+      <strong>"The best investment idea I ever had came from watching my kids at the playground. They LOVED a certain toy. I looked up the company. Bought the stock. It went up 1,000%."</strong><br><br>
+      <strong>"Wall Street analysts missed it because they were in offices. I was at a PLAYGROUND. That's your EDGE — everyday observation."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Invest in What You Know</strong> — Peter Lynch's famous advice: your everyday life is full of investment opportunities. Love that restaurant? Check if it's public. Obsessed with that product? Research the company. The best investments are often RIGHT IN FRONT OF YOU. Wall Street analysts sit in offices — you live in the REAL WORLD.`,
+  concepts: ['Invest in What You Know'],
+  choices: [
+    { icon: '🎮', text: '"Let me try the Stock Spotting game!"', next: 'lynch_game' },
+    { icon: '🍔', text: '"Is that burger organic?"', coins: 3, next: 'lynch_game' }
+  ]
+},
+
+lynch_game: {
+  title: '🎮 Mini-Game: Stock Spotting!',
+  narrative: `<strong>Peter Lynch:</strong> "I'll describe everyday observations. Tell me which ones are GOOD investment leads and which are TRAPS!"`,
+  miniGame: {
+    title: '🔍 Stock Spotting Challenge',
+    desc: 'Good investment idea or trap? Use your Peter Lynch instincts!',
+    build: function(container) {
+      const clues = [
+        { desc: 'Everyone at school wears these cool sneakers', good: true },
+        { desc: 'A friend\'s uncle says \'buy this crypto, it\'s guaranteed to 100x\'', good: false },
+        { desc: 'Your favorite coffee shop is opening 50 new locations', good: true },
+        { desc: 'TV guru says \'this stock will moon this week!\'', good: false },
+        { desc: 'Your kid\'s school bought tablets from a company you\'ve never heard of', good: true },
+        { desc: 'Someone on social media promises \'risk-free 50% returns\'', good: false },
+      ];
+      let idx = 0, score = 0;
+      const qArea = document.createElement('div');
+      qArea.style.cssText = 'text-align:left;margin:12px 0;font-size:14px;font-style:italic;min-height:50px;display:flex;align-items:center;justify-content:center;padding:8px;';
+      const btnArea = document.createElement('div');
+      btnArea.style.cssText = 'display:flex;gap:12px;justify-content:center;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+
+      function show() {
+        if (idx >= clues.length) {
+          qArea.textContent = score >= 4 ? '🎉 Lynch would be proud!' : '📚 Remember: observe the real world, not social media!';
+          btnArea.innerHTML = '';
+          scoreEl.textContent = `Score: ${score}/${clues.length}`;
+          const nb = document.createElement('button');
+          nb.className = 'choice-btn';
+          nb.style.marginTop = '12px';
+          nb.innerHTML = '<span class="choice-icon">✅</span>Continue!';
+          nb.onclick = () => goToScene('lynch_result');
+          btnArea.appendChild(nb);
+          return;
+        }
+        qArea.textContent = `"${clues[idx].desc}"`;
+        scoreEl.textContent = `Clue ${idx+1}/${clues.length} · Score: ${score}`;
+        btnArea.innerHTML = '';
+        ['🟢 Good Lead', '🔴 Trap'].forEach((label, i) => {
+          const b = document.createElement('button');
+          b.className = 'choice-btn';
+          b.style.flex = '1';
+          b.style.justifyContent = 'center';
+          b.style.fontSize = '14px';
+          b.textContent = label;
+          b.onclick = () => {
+            if ((i === 0) === clues[idx].good) score++;
+            idx++;
+            show();
+          };
+          btnArea.appendChild(b);
+        });
+      }
+      container.appendChild(qArea);
+      container.appendChild(btnArea);
+      container.appendChild(scoreEl);
+      show();
+    }
+  }
+},
+
+lynch_result: {
+  title: '🔍 The Magellan Method',
+  dialogue: [
+    {
+      emoji: '🔍', color: '#E0F2F1', name: 'Peter Lynch', title: 'Flips the last burger',
+      text: `<strong>"Here's my final tip: classify every stock into one of three categories."</strong><br><br>
+      He holds up three burger buns.<br><br>
+      <strong>"SLOW-GROWERS: stable but boring (think: big banks). STEADY-GROWERS: reliable growers (think: consumer brands). FAST-GROWERS: small companies growing fast — these can 10x or go to zero."</strong><br><br>
+      <strong>"The key: do your homework. Read the annual report. Visit the store. Talk to customers. Then be PATIENT."</strong><br><br>
+      <strong>"My favorite holding period? Forever. Well, maybe not forever. But a LONG time."</strong>`
+    }
+  ],
+  explain: `💡 <strong>Growth at a Reasonable Price (GARP)</strong> — Peter Lynch's approach: find growing companies at fair prices. Don't overpay for hype. Don't underpay for junk. The sweet spot is a great company at a reasonable price. Then HOLD. His record: 29.2% annual return for 13 years by investing in companies he understood from everyday life.`,
+  concepts: ['Growth at a Reasonable Price'],
+  choices: [
+    { icon: '🌀', text: '"Patience + observation = profits!"', coins: 15, next: 'lynch_exit' }
+  ]
+},
+
+lynch_exit: {
+  title: '🌅 Departing the Backyard',
+  narrative: `Peter Lynch hands you a burger wrapped in a stock certificate.<br><br>
+<strong>"One last stop before the finale. Joel Greenblatt has a formula that'll blow your mind. It's called the Magic Formula, and it's simpler than this burger recipe."</strong><br><br>
+The portal opens above the BBQ grill.`,
+  choices: [
+    { icon: '🌀', text: 'To the Magic Forest...', next: 'greenblatt_intro' }
+  ]
+},
+
+// ---------- CHAPTER 8: THE MAGIC FOREST ----------
+greenblatt_intro: {
+  title: '🎩 The Magic Forest',
+  chapter: 'Chapter 8: The Magic Formula',
+  narrative: `You arrive in an enchanted forest. Trees have P/E ratios carved into their bark. Mushrooms glow with earnings yield percentages.<br><br>
+  A man in a magician's hat pulls a stock portfolio out of a top hat. It's up 40%.`,
+  dialogue: [
+    {
+      emoji: '🎩', color: '#EDE7F6', name: 'Joel Greenblatt', title: 'Created the Magic Formula · Made $20B+ with his fund · Actually a magician',
+      text: `<strong>"Abra cadabra! Welcome to the Magic Forest!"</strong><br><br>
+      He pulls a whiteboard from his hat.<br><br>
+      <strong>"My Magic Formula has two ingredients. Two! That's it!"</strong><br><br>
+      <strong>"Ingredient 1: HIGH RETURN ON CAPITAL — the company is QUALITY. It makes lots of profit from every dollar invested."</strong><br><br>
+      <strong>"Ingredient 2: HIGH EARNINGS YIELD — the stock is CHEAP. You're getting a great deal."</strong><br><br>
+      <strong>"Quality + Cheap = Magic. My formula beat the market by 30-40% annually for 14 years."</strong>`
+    }
+  ],
+  explain: `💡 <strong>The Magic Formula</strong> — Joel Greenblatt's strategy: rank all stocks by (1) Return on Capital (how profitable) and (2) Earnings Yield (how cheap). Buy the ones that rank high on BOTH. It's that simple. His fund returned 30-40% annually vs 12% for the market. The key: be disciplined and hold for a year.`,
+  concepts: ['The Magic Formula'],
+  choices: [
+    { icon: '🎮', text: '"Show me the Magic Formula in action!"', next: 'formula_game' }
+  ]
+},
+
+formula_game: {
+  title: '🎮 Mini-Game: The Magic Formula',
+  narrative: `<strong>Joel Greenblatt:</strong> "I'll show you 5 companies. Pick the one with the BEST combination of high ROC and high earnings yield — that's your Magic pick!"`,
+  miniGame: {
+    title: '🎩 Magic Formula Picker',
+    desc: 'Pick the stock with the best Quality + Value combo!',
+    build: function(container) {
+      const rounds = [
+        { stocks: [
+          { name: 'A', roc: 8, ey: 5 }, { name: 'B', roc: 35, ey: 18 }, { name: 'C', roc: 12, ey: 3 }
+        ], best: 1 },
+        { stocks: [
+          { name: 'X', roc: 5, ey: 40 }, { name: 'Y', roc: 3, ey: 2 }, { name: 'Z', roc: 45, ey: 25 }
+        ], best: 2 },
+        { stocks: [
+          { name: '1', roc: 20, ey: 15 }, { name: '2', roc: 50, ey: 2 }, { name: '3', roc: 2, ey: 50 }
+        ], best: 0 },
+      ];
+      let ridx = 0, score = 0;
+      const qArea = document.createElement('div');
+      qArea.style.cssText = 'text-align:left;margin:12px 0;font-size:14px;';
+      const btnArea = document.createElement('div');
+      btnArea.style.cssText = 'display:flex;gap:8px;justify-content:center;flex-wrap:wrap;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+
+      function show() {
+        if (ridx >= rounds.length) {
+          qArea.textContent = score >= 2 ? '🎉 Magic Formula Master!' : '📚 Remember: you want BOTH high ROC AND high EY!';
+          btnArea.innerHTML = '';
+          scoreEl.textContent = `Score: ${score}/${rounds.length}`;
+          const nb = document.createElement('button');
+          nb.className = 'choice-btn';
+          nb.style.marginTop = '12px';
+          nb.innerHTML = '<span class="choice-icon">✅</span>Continue!';
+          nb.onclick = () => goToScene('greenblatt_result');
+          btnArea.appendChild(nb);
+          return;
+        }
+        const r = rounds[ridx];
+        qArea.innerHTML = `<strong>Round ${ridx+1}/${rounds.length}</strong> — Pick the Magic pick!<br><small>ROC = Quality (%), EY = Value (%)</small>`;
+        scoreEl.textContent = `Score: ${score}`;
+        btnArea.innerHTML = '';
+        r.stocks.forEach((s, i) => {
+          const b = document.createElement('button');
+          b.className = 'choice-btn';
+          b.style.flex = '1';
+          b.style.minWidth = '120px';
+          b.style.justifyContent = 'center';
+          b.style.fontSize = '13px';
+          b.innerHTML = `<strong>Stock ${s.name}</strong><br>ROC: ${s.roc}% · EY: ${s.ey}%`;
+          b.onclick = () => {
+            btnArea.querySelectorAll('.choice-btn').forEach((bb,j) => {
+              bb.onclick = null;
+              if (j === r.best) bb.style.background = '#d4edda';
+              if (i === j && i !== r.best) bb.style.background = '#f8d7da';
+            });
+            if (i === r.best) score++;
+            state.formulaAttempts++;
+            setTimeout(() => { ridx++; show(); }, 1500);
+          };
+          btnArea.appendChild(b);
+        });
+      }
+      container.appendChild(qArea);
+      container.appendChild(btnArea);
+      container.appendChild(scoreEl);
+      show();
+    }
+  }
+},
+
+greenblatt_result: {
+  title: '🎩 The Magic Revealed',
+  dialogue: [
+    {
+      emoji: '🎩', color: '#EDE7F6', name: 'Joel Greenblatt', title: 'Bows dramatically',
+      text: `<strong>"The real magic isn't the formula — it's the DISCIPLINE to follow it."</strong><br><br>
+      He puts the whiteboard back in his hat.<br><br>
+      <strong>"Most people overcomplicate investing. They hire advisors, buy expensive software, watch financial TV all day. The Magic Formula proves: simple works."</strong><br><br>
+      <strong>"Quality companies at cheap prices. Hold for a year. Repeat. That's it."</strong>`
+    }
+  ],
+  concepts: ['Dollar-Cost Averaging'],
+  choices: [
+    { icon: '🌀', text: '"Simple IS magical. Final chapter!"', coins: 20, next: 'greenblatt_exit' }
+  ]
+},
+
+greenblatt_exit: {
+  title: '🌅 Departing the Magic Forest',
+  narrative: `The trees whisper P/E ratios as you leave. The glowing mushrooms fade behind you.<br><br>
+<strong>"One final destination: The Castle of Financial Independence. Where it all comes together."</strong>`,
+  choices: [
+    { icon: '🌀', text: 'To the Castle...', next: 'castle_intro' }
+  ]
+},
+
+// ---------- CHAPTER 9: THE CASTLE OF FINANCIAL INDEPENDENCE ----------
+castle_intro: {
+  title: '🏰 The Castle of Financial Independence',
+  chapter: 'Chapter 9: The Grand Finale',
+  narrative: `You arrive at a magnificent castle. The towers are made of index fund certificates. The moat is filled with Cherry Coke.<br><br>
+  ALL the mentors you've met are standing on the balcony, waving.`,
+  dialogue: [
+    {
+      emoji: '🧔', color: '#FFCCBC', name: 'Warren Buffett', title: 'Standing at the center',
+      text: `<strong>"Welcome to the final chapter! You've traveled through Financial Literacy Island, the Valley of Value, the Wealthy Barber's Village, Millionaire Town, Naval's Tech Valley, Peter Lynch's Backyard, and the Magic Forest."</strong><br><br>
+      <strong>"Now it's time to put it ALL together."</strong>`
+    },
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Leaning on the toy Lambo',
+      text: `<strong>"Before you enter the castle, you need to understand THE 4% RULE. This is the key to the front door."</strong>`
+    }
+  ],
+  explain: `💡 <strong>The 4% Rule</strong> — If you save 25× your annual expenses, you can withdraw 4% per year and likely never run out of money. Example: if you spend $40,000/year, you need $1,000,000 invested. Withdraw $40,000/year (4%), and your investments grow enough to keep up. This is the FIRE movement's core formula: <strong>Financial Independence Number = Annual Expenses × 25</strong>.`,
+  concepts: ['The 4% Rule', 'Financial Independence'],
+  choices: [
+    { icon: '🎮', text: '"Let me solve the Final Challenge!"', next: 'final_challenge' },
+    { icon: '🏰', text: '"25× my expenses — that\'s my target!"', coins: 10, next: 'final_challenge' }
+  ]
+},
+
+final_challenge: {
+  title: '🏆 The Final Challenge',
+  narrative: `A massive door appears. On it: a lock with 10 tumblers. Each tumbler is labeled with a concept you've learned.<br><br>
+<strong>All the mentors:</strong> "Answer the final questions to unlock the door to Financial Independence!"`,
+  miniGame: {
+    title: '🏰 The Grand Finale Quiz',
+    desc: '8 questions covering everything you\'ve learned. Unlock the door!',
+    build: function(container) {
+      const questions = [
+        { q: '"The rich don\'t work for money, money works for them." Who said this?',
+          opts: ['Warren Buffett', 'Rich Dad (Kiyosaki)', 'Naval Ravikant', 'Benjamin Graham'], correct: 1 },
+        { q: 'What is the Margin of Safety?',
+          opts: ['A type of insurance', 'Buying below intrinsic value', 'Diversifying your portfolio', 'Saving 10%'], correct: 1 },
+        { q: 'Mr. Market is:',
+          opts: ['A grocery store', 'A trading algorithm', 'The stock market personified', 'Warren Buffett\'s dog'], correct: 2 },
+        { q: 'Naval\'s "permissionless leverage" includes:',
+          opts: ['Labor and Capital', 'Code and Media', 'Real Estate and Gold', 'Bonds and Stocks'], correct: 1 },
+        { q: 'The 4% Rule helps you calculate:',
+          opts: ['Your tax rate', 'Your ideal home size', 'Your financial independence number', 'Your credit score'], correct: 2 },
+        { q: 'Peter Lynch\'s investing advice:',
+          opts: ['Only invest in tech', 'Invest in what you know', 'Day trade everything', 'Never buy stocks'], correct: 1 },
+        { q: 'An ASSET is something that:',
+          opts: ['Looks expensive', 'Takes money out of your pocket', 'Puts money IN your pocket', 'Requires a loan'], correct: 2 },
+        { q: 'The Magic Formula combines:',
+          opts: ['Luck and timing', 'Quality + Value', 'Risk + reward', 'Bulls + bears'], correct: 1 },
+      ];
+      let idx = 0, score = 0;
+      const qArea = document.createElement('div');
+      qArea.style.cssText = 'text-align:left;margin:12px 0;font-size:14px;font-weight:bold;min-height:40px;';
+      const optsArea = document.createElement('div');
+      optsArea.className = 'puzzle-options';
+      const explArea = document.createElement('div');
+      explArea.style.cssText = 'font-size:13px;margin:8px 0;color:var(--green);font-weight:bold;min-height:20px;';
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:14px;margin:8px 0;';
+
+      function show() {
+        if (idx >= questions.length) {
+          qArea.textContent = score >= 6 ? '🏰 THE DOOR UNLOCKS!' : `🔒 ${score >= 4 ? 'Close! Door slightly opens...' : 'Door stays locked. But you learned!'}`;
+          optsArea.innerHTML = '';
+          explArea.textContent = `Final Score: ${score}/${questions.length}`;
+          state.quizScore = score;
+          const nb = document.createElement('button');
+          nb.className = 'choice-btn';
+          nb.style.marginTop = '12px';
+          nb.innerHTML = '<span class="choice-icon">🏆</span>See Your Results!';
+          nb.onclick = () => goToScene('ending');
+          optsArea.appendChild(nb);
+          return;
+        }
+        qArea.textContent = `Q${idx+1}/${questions.length}: ${questions[idx].q}`;
+        explArea.textContent = '';
+        scoreEl.textContent = `Score: ${score}/${questions.length}`;
+        optsArea.innerHTML = '';
+        questions[idx].opts.forEach((opt, i) => {
+          const b = document.createElement('button');
+          b.className = 'puzzle-opt';
+          b.textContent = opt;
+          b.onclick = () => {
+            optsArea.querySelectorAll('.puzzle-opt').forEach((bb,j) => {
+              bb.onclick = null;
+              if (j === questions[idx].correct) bb.classList.add('correct');
+              if (i === j && i !== questions[idx].correct) bb.classList.add('wrong');
+            });
+            if (i === questions[idx].correct) { score++; explArea.textContent = '✅ Correct!'; }
+            else explArea.textContent = '❌ Not quite!';
+            setTimeout(() => { idx++; show(); }, 1500);
+          };
+          optsArea.appendChild(b);
+        });
+      }
+      container.appendChild(qArea);
+      container.appendChild(optsArea);
+      container.appendChild(explArea);
+      container.appendChild(scoreEl);
+      show();
+    }
+  }
+},
+
+// ---------- ENDING ----------
+ending: {
+  title: '🏆 The Grand Finale',
+  chapter: 'The End... or The Beginning?',
+  narrative: function() {
+    const pct = Math.round((state.concepts.size / ALL_CONCEPTS.length) * 100);
+    const missed = ALL_CONCEPTS.filter(c => !state.concepts.has(c));
+    let html = `<div class="ending-card">`;
+    html += `<h2>🎉 Congratulations, Future Millionaire! 🎉</h2>`;
+    html += `<p>You've completed Escape the Rat Race!</p>`;
+    html += `<div style="display:flex;justify-content:center;gap:20px;margin:16px 0;flex-wrap:wrap;">`;
+    html += `<div style="text-align:center;"><div style="font-size:32px;">💰</div><div><strong>${state.coins}</strong> Coins Earned</div></div>`;
+    html += `<div style="text-align:center;"><div style="font-size:32px;">📚</div><div><strong>${state.concepts.size}/${ALL_CONCEPTS.length}</strong> Concepts Learned (${pct}%)</div></div>`;
+    html += `<div style="text-align:center;"><div style="font-size:32px;">🧠</div><div><strong>${state.quizScore}/8</strong> Final Quiz</div></div>`;
+    html += `</div>`;
+    html += `<h3 style="margin-top:16px;">Concepts Mastered:</h3>`;
+    html += `<div class="concept-summary">`;
+    ALL_CONCEPTS.forEach(c => {
+      const cls = state.concepts.has(c) ? 'earned' : 'missed';
+      const icon = state.concepts.has(c) ? '✅' : '⬜';
+      html += `<div class="${cls}">${icon} ${c}</div>`;
+    });
+    html += `</div>`;
+    if (missed.length > 0) {
+      html += `<p style="font-size:13px;color:#666;margin:8px 0;">${missed.length} concepts were missed — replay the game to catch them all!</p>`;
+    }
+    html += `</div>`;
+    return html;
+  },
+  dialogue: [
+    {
+      emoji: '🧔', color: '#FFCCBC', name: 'Warren Buffett', title: 'Raises a Cherry Coke',
+      text: `<strong>"Remember: investing is not about getting rich quick. It's about getting rich SURELY. Over time. With patience."</strong><br><br>
+      <strong>"The seeds you plant today — financial literacy, saving, investing wisely — will grow into a forest of wealth."</strong>`
+    },
+    {
+      emoji: '👴', color: '#C8E6C9', name: 'Rich Dad', title: 'Revving the toy Lambo',
+      text: `<strong>"Now GO build those assets! And remember: your house is a LIABILITY, not an asset!"</strong>`
+    },
+    {
+      emoji: '🧘', color: '#F3E5F5', name: 'Naval Ravikant', title: 'One eye open',
+      text: `<strong>"And be happy along the way. Wealth without happiness is just a really expensive prison."</strong>`
+    }
+  ],
+  choices: [
+    { icon: '🔄', text: '🔄 Play Again (collect missed concepts)', action: () => {
+      state.concepts.clear();
+      state.coins = 0;
+      state.quizScore = 0;
+      updateHUD();
+      goToScene('prologue');
+    }},
+    { icon: '📖', text: '📚 Review All Concepts', action: () => goToScene('concept_review')}
+  ]
+},
+
+concept_review: {
+  title: '📚 Concept Review — The Complete Guide',
+  narrative: `Here's everything you learned, organized by category. Bookmark this page!`,
+  dialogue: [
+    {
+      emoji: '📖', color: '#E3F2FD', name: 'Your Adventure Guide', title: 'Complete concept summary',
+      text: `
+        <strong>🏗️ WEALTH CREATION FOUNDATIONS</strong><br>
+        • <strong>Asset vs Liability</strong> — Assets put money IN. Liabilities take money OUT.<br>
+        • <strong>Cash Flow Quadrant</strong> — E→S→B→I. Move from employee to investor.<br>
+        • <strong>The Rat Race</strong> — Work→Pay→Broke→Repeat. Escape by building assets.<br>
+        • <strong>Financial Literacy</strong> — Understanding money > earning money.<br>
+        • <strong>Equity</strong> — Own a piece of a business. Wealth earns while you sleep.<br>
+        • <strong>Wealth vs Money</strong> — Wealth = assets. Money = transfer mechanism.<br><br>
+
+        <strong>📊 VALUE INVESTING</strong><br>
+        • <strong>Value Investing</strong> — Buy businesses for less than they're worth.<br>
+        • <strong>Margin of Safety</strong> — Always buy with a cushion. Never pay full price.<br>
+        • <strong>Mr. Market</strong> — The market is emotional. Use his mood swings.<br>
+        • <strong>Intrinsic Value</strong> — What a business is REALLY worth.<br>
+        • <strong>Circle of Competence</strong> — Only invest in what you understand.<br>
+        • <strong>Diversification</strong> — Don't put all eggs in one basket.<br>
+        • <strong>Long-term Thinking</strong> — Time in market > timing the market.<br><br>
+
+        <strong>💰 PERSONAL FINANCE</strong><br>
+        • <strong>The 10% Solution</strong> — Save 10% of every dollar, automatically.<br>
+        • <strong>Savings Rate</strong> — #1 predictor of wealth (more than income).<br>
+        • <strong>Compound Interest</strong> — The 8th wonder of the world.<br>
+        • <strong>Emergency Fund</strong> — 6 months expenses. Your financial airbag.<br>
+        • <strong>Frugality</strong> — Live below your means. The wealthy look poor.<br>
+        • <strong>Lifestyle Inflation</strong> — The silent wealth killer.<br>
+        • <strong>Living Below Means</strong> — Spend less than you earn, always.<br>
+        • <strong>Tax Efficiency</strong> — Keep more of what you earn.<br>
+        • <strong>The 4% Rule</strong> — FI number = annual expenses × 25.<br>
+        • <strong>Financial Independence</strong> — When investments cover your expenses.<br><br>
+
+        <strong>🎯 INVESTING STRATEGIES</strong><br>
+        • <strong>Index Funds</strong> — Warren's #1 recommendation for most people.<br>
+        • <strong>Dollar-Cost Averaging</strong> — Invest the same amount regularly.<br>
+        • <strong>The Magic Formula</strong> — Quality + Cheap = beats the market.<br>
+        • <strong>Invest in What You Know</strong> — Peter Lynch's playground method.<br>
+        • <strong>Growth at Reasonable Price</strong> — Great companies at fair prices.<br>
+        • <strong>Risk Management</strong> — Rule #1: Never lose money.<br><br>
+
+        <strong>🧘 MINDSET</strong><br>
+        • <strong>Leverage</strong> — Code + Media = permissionless wealth multiplication.<br>
+        • <strong>Specific Knowledge</strong> — Skills unique to you that feel like play.<br>
+        • <strong>Patience &amp; Discipline</strong> — The stock market transfers money from the impatient to the patient.<br>
+      `
+    }
+  ],
+  choices: [
+    { icon: '🔄', text: '🔄 Play Again', action: () => {
+      state.concepts.clear();
+      state.coins = 0;
+      state.quizScore = 0;
+      updateHUD();
+      goToScene('prologue');
+    }},
+    { icon: '🏠', text: '🏠 Return to Title Screen', action: () => {
+      document.getElementById('hud').style.display = 'none';
+      document.getElementById('game-container').innerHTML = `
+        <div id="title-screen">
+          <h1>💰 Escape the Rat Race 💰</h1>
+          <p class="subtitle">Thanks for playing!</p>
+          <button class="start-btn" onclick="startGame()">PLAY AGAIN</button>
+        </div>`;
+    }}
+  ]
+}
+
+}; // end SCENES
+
+// Handle narrative as function
+const origRender = renderScene;
+renderScene = function(scene) {
+  if (typeof scene.narrative === 'function') {
+    scene.narrative = scene.narrative();
+  }
+  origRender(scene);
+};
+</script>
+</body>
+</html>
