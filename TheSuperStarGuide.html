@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Super Star Guide — Your Secret to Being Amazing!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);font-family:'Nunito',sans-serif;overflow:hidden;user-select:none}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(2px 2px at 20px 30px,#eee,transparent),radial-gradient(1px 1px at 80px 60px,#fff,transparent),radial-gradient(2px 2px at 140px 20px,#ddd,transparent),radial-gradient(1px 1px at 50px 90px,#fff,transparent),radial-gradient(1px 1px at 170px 70px,rgba(255,255,255,0.7),transparent);background-size:200px 100px;animation:twinkle 4s ease-in-out infinite alternate;pointer-events:none;z-index:0}
+@keyframes twinkle{0%{opacity:.6}100%{opacity:1}}
+.mag-wrap{position:relative;z-index:1}
+/* FIX #3: perspective-origin left center anchors the flip correctly */
+.book{width:750px;height:540px;position:relative;perspective:1800px;perspective-origin:left center}
+/* FIX #1: pointer-events none by default; JS enables only active page */
+.page{width:100%;height:100%;position:absolute;top:0;left:0;transform-origin:left center;transition:transform .9s cubic-bezier(.645,.045,.355,1);transform-style:preserve-3d;pointer-events:none}
+.page.flipped{transform:rotateY(-180deg)}
+.page-front,.page-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:4px 18px 18px 4px;overflow-y:auto;overflow-x:hidden;pointer-events:none}
+.page-front{background:#fffbf2;box-shadow:5px 5px 25px rgba(0,0,0,.3),inset -3px 0 8px rgba(0,0,0,.05)}
+.page-back{transform:rotateY(180deg);background:#fffbf2;box-shadow:-5px 5px 25px rgba(0,0,0,.3)}
+.page-front::-webkit-scrollbar,.page-back::-webkit-scrollbar{width:5px}
+.page-front::-webkit-scrollbar-thumb,.page-back::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:3px}
+.deco-back{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px;text-align:center;color:rgba(255,255,255,.95);text-shadow:0 2px 8px rgba(0,0,0,.3)}
+.deco-back .di{font-size:4em}.deco-back .dt{font-family:'Fredoka One',cursive;font-size:1.5em}.deco-back .ds{font-size:.9em;opacity:.8}
+/* COVER */
+.cover .page-front{background:linear-gradient(160deg,#ff6b35,#f7931e 20%,#ffcc02 45%,#6c5ce7 70%,#a55eea);color:#fff;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;text-shadow:2px 3px 6px rgba(0,0,0,.25);position:relative;overflow:hidden}
+.cover .page-front::before{content:'✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★';position:absolute;top:10px;left:0;right:0;font-size:.8em;letter-spacing:8px;opacity:.5}
+.cover .page-front::after{content:'✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★';position:absolute;bottom:10px;left:0;right:0;font-size:.8em;letter-spacing:8px;opacity:.5}
+.cv-badge{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 20px;font-size:.85em;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.cover h1{font-family:'Fredoka One',cursive;font-size:2.8em;line-height:1.15;background:linear-gradient(to right,#fff,#ffeaa7,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(2px 3px 4px rgba(0,0,0,.3))}
+.cover .tagline{font-family:'Balsamiq Sans',sans-serif;font-size:1.2em;font-weight:700;margin:6px 0 16px;opacity:.95}
+.cv-chars{font-size:2.6em;margin:6px 0;letter-spacing:6px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+.cv-hint{margin-top:18px;font-size:1em;font-weight:700;background:rgba(0,0,0,.15);padding:8px 24px;border-radius:30px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
+/* LAYOUT */
+.pc{padding:26px 30px 18px;height:100%;display:flex;flex-direction:column}
+.ph{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:3px solid;flex-shrink:0}
+.ph .si{font-size:1.6em}.ph .sl{font-family:'Fredoka One',cursive;font-size:.7em;text-transform:uppercase;letter-spacing:2px;opacity:.7}.ph .st{font-family:'Fredoka One',cursive;font-size:1.45em;line-height:1.2}
+.to .ph{border-color:#ff6b35;color:#e55d2b}.tp .ph{border-color:#6c5ce7;color:#5f3dc3}.tg .ph{border-color:#00b894;color:#00a381}.tb .ph{border-color:#0984e3;color:#0770c2}.tpk .ph{border-color:#e84393;color:#d63384}.ty .ph{border-color:#fdcb6e;color:#e17055}.tr .ph{border-color:#d63031;color:#b71c1c}.ttl .ph{border-color:#00cec9;color:#00a8a5}
+.pb{flex:1;font-size:.94em;line-height:1.65;color:#2d3436;overflow-y:auto}
+.pb p{margin-bottom:10px}
+.csays{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,#f8f9fa,#e9ecef);border-radius:16px;padding:12px 14px;margin:10px 0;border:2px solid #dee2e6}
+.cav{font-size:2em;flex-shrink:0;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.cbub{flex:1}.cn{font-family:'Fredoka One',cursive;font-size:.8em;margin-bottom:3px}.ct{font-size:.9em;line-height:1.5;font-style:italic;color:#495057}
+.cl{color:#e17055}.co{color:#6c5ce7}.cc{color:#00b894}.cbt{color:#e84393}.ctu{color:#0984e3}.cdg{color:#636e72}.cfx{color:#ff6b35}.cst{color:#f39c12}
+/* BADGES */
+.bcm{text-align:center;margin:10px 0;padding:12px;background:linear-gradient(135deg,#f6f9fc,#e8eaf6);border-radius:16px;border:2px dashed #c5cae9}
+.bcl{font-family:'Fredoka One',cursive;font-size:.75em;text-transform:uppercase;letter-spacing:2px;color:#7986cb;margin-bottom:8px}
+.hb{width:88px;height:88px;margin:0 auto 6px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;font-size:2.5em;background:conic-gradient(from 0deg,#ff6b6b,#ffa502,#ffdd59,#7bed9f,#70a1ff,#5352ed,#a55eea,#ff6b6b);box-shadow:0 0 20px rgba(108,92,231,.4),0 0 40px rgba(0,206,201,.2),inset 0 0 20px rgba(255,255,255,.3);animation:holo 3s linear infinite}
+.hb::before{content:'';position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.9),rgba(255,255,255,.6) 30%,rgba(255,255,255,.1) 60%,transparent)}
+.hb::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);animation:shine 2.5s ease-in-out infinite}
+.hb .bi{position:relative;z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.hb .br{position:absolute;inset:-3px;border-radius:50%;border:3px solid rgba(255,215,0,.85);animation:rring 4s linear infinite}
+@keyframes holo{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes shine{0%,100%{transform:translateX(-100%) rotate(25deg)}50%{transform:translateX(100%) rotate(25deg)}}
+@keyframes rring{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.bn{font-family:'Fredoka One',cursive;font-size:.95em;color:#2d3436;margin-top:4px}
+.bm{font-size:.8em;color:#636e72;font-style:italic;margin-top:2px}
+.bst{font-size:.78em;color:#6c5ce7;font-weight:700;margin-top:5px;padding:3px 10px;background:rgba(108,92,231,.1);border-radius:12px;display:inline-block}
+.hb.unc{background:conic-gradient(from 0deg,#b2bec3,#dfe6e9,#b2bec3,#dfe6e9,#b2bec3);box-shadow:0 0 10px rgba(0,0,0,.1);animation:none;filter:grayscale(1)}
+.hb.unc::after{animation:none}
+.bcol{animation:bpop .6s ease-out}
+@keyframes bpop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.scon{position:relative;display:inline-block}
+.sparkle{position:absolute;width:8px;height:8px;background:#ffd700;border-radius:50%;pointer-events:none;animation:sf .8s ease-out forwards}
+@keyframes sf{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
+/* BADGE ALBUM */
+.bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:10px 0}
+.bgi{text-align:center;padding:8px 4px;border-radius:12px;background:rgba(255,255,255,.7);border:2px solid #dfe6e9;transition:all .3s}
+.bgi:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.1);border-color:#6c5ce7}
+.bgi.unc{opacity:.35;filter:grayscale(1)}
+.mb{width:50px;height:50px;margin:0 auto 5px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.45em;background:conic-gradient(from 0deg,#ff6b6b,#ffa502,#ffdd59,#7bed9f,#70a1ff,#5352ed,#a55eea,#ff6b6b);position:relative;animation:holo 3s linear infinite}
+.mb::before{content:'';position:absolute;inset:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.85),rgba(255,255,255,.3) 50%,transparent)}
+.mb .bi{position:relative;z-index:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+.bgn{font-family:'Fredoka One',cursive;font-size:.6em;color:#2d3436;line-height:1.2;margin-bottom:2px}
+.bgm{font-size:.52em;color:#636e72;font-style:italic;line-height:1.3}
+/* CONTENT BOXES */
+.ff{background:linear-gradient(135deg,#fff3e0,#ffe0b2);border-left:5px solid #ff9800;border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0}
+.ff .bl{font-family:'Fredoka One',cursive;font-size:.78em;text-transform:uppercase;letter-spacing:1px;color:#e65100;margin-bottom:5px}
+.tt{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-left:5px solid #4caf50;border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0}
+.tt .bl{font-family:'Fredoka One',cursive;font-size:.78em;text-transform:uppercase;letter-spacing:1px;color:#2e7d32;margin-bottom:5px}
+.st{background:linear-gradient(135deg,#e8eaf6,#c5cae9);border-left:5px solid #5c6bc0;border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0}
+.st .bl{font-family:'Fredoka One',cursive;font-size:.78em;text-transform:uppercase;letter-spacing:1px;color:#283593;margin-bottom:5px}
+.sb{background:linear-gradient(135deg,#fce4ec,#f8bbd0);border-left:5px solid #e91e63;border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0}
+.sb .bl{font-family:'Fredoka One',cursive;font-size:.78em;text-transform:uppercase;letter-spacing:1px;color:#ad1457;margin-bottom:5px}
+.pn{text-align:center;font-size:.75em;color:#b2bec3;padding:5px 0 3px;flex-shrink:0;border-top:1px solid #f1f2f6;margin-top:auto}
+.pn span{font-family:'Fredoka One',cursive;color:#dfe6e9}
+.toc-list{list-style:none;padding:0}
+.toc-list li{display:flex;align-items:center;gap:10px;padding:7px 10px;margin:3px 0;border-radius:10px;font-weight:600;font-size:.9em}
+.toc-list li:nth-child(odd){background:#f8f9fa}.toc-list li:nth-child(even){background:#f1f2f6}
+.toc-list .tic{font-size:1.2em}.toc-list .tp{margin-left:auto;font-size:.8em;color:#636e72;font-weight:400}
+.wq{text-align:center;padding:14px 18px;margin:12px 0;background:linear-gradient(135deg,#dfe6e9,#b2bec3);border-radius:16px}
+.wq .qm{font-size:2em;color:#636e72;line-height:1;font-family:Georgia,serif}
+.wq .qt{font-size:1em;font-style:italic;color:#2d3436;margin:5px 0;line-height:1.5}
+.wq .qs{font-size:.78em;color:#636e72;font-weight:700}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.cc{background:#f8f9fa;border-radius:12px;padding:12px;border:2px solid #e9ecef}
+.cc h4{font-family:'Fredoka One',cursive;font-size:.84em;margin-bottom:7px}
+.cc p,.cc li{font-size:.84em;line-height:1.5}.cc ul{padding-left:15px}.cc li{margin-bottom:3px}
+.si2{text-align:center;font-size:2.6em;padding:8px;margin:7px 0;background:linear-gradient(135deg,#ffeaa7,#fab1a0);border-radius:14px}
+/* NAV */
+.nav-area{display:flex;flex-direction:column;align-items:center;margin-top:14px;position:relative;z-index:100}
+.nav-btns{display:flex;gap:16px;align-items:center}
+.nbtn{background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.3);padding:10px 30px;border-radius:30px;font-family:'Fredoka One',cursive;font-size:1em;cursor:pointer;transition:all .3s;backdrop-filter:blur(4px);pointer-events:auto}
+.nbtn:hover:not(:disabled){background:rgba(255,255,255,.25);transform:scale(1.05);border-color:rgba(255,255,255,.6)}
+.nbtn:disabled{opacity:.25;cursor:default;transform:none}
+.pind{color:rgba(255,255,255,.6);margin-top:7px;font-size:.85em;font-weight:600}
+.bcnt{color:rgba(255,255,255,.8);font-family:'Fredoka One',cursive;font-size:.9em;margin-top:5px;background:rgba(255,255,255,.08);padding:4px 16px;border-radius:20px}
+/* BACK COVER */
+.bcp .page-front{background:linear-gradient(160deg,#00b894,#00cec9 40%,#0984e3 70%,#6c5ce7);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px;text-shadow:1px 2px 4px rgba(0,0,0,.2)}
+/* REFS */
+.re{padding:8px 0;border-bottom:1px solid #f1f2f6;font-size:.84em;line-height:1.6}
+.re:last-child{border-bottom:none}
+.ra{font-weight:700;color:#2d3436}.rti{font-style:italic;color:#6c5ce7}.rd{color:#636e72;font-size:.87em}
+.rtag{font-size:.75em;color:#00b894;font-weight:700;background:rgba(0,184,148,.1);padding:1px 7px;border-radius:10px;margin-left:5px}
+.rn{font-size:.79em;color:#b2bec3;margin-top:2px}
+/* PRINT */
+@media print{body{background:#fff;overflow:visible}.nav-area,#ov{display:none!important}.book{width:100%;height:auto;perspective:none}.page{position:relative;width:100%;height:auto;page-break-after:always;transform:none!important;pointer-events:auto}.page-back{display:none}.page-front{box-shadow:none;border:1px solid #ddd;min-height:540px;pointer-events:auto;position:relative}}
+@media(max-width:800px){.book{width:95vw;height:88vh}.pc{padding:14px 16px 12px}.cover h1{font-size:1.8em}.ph .st{font-size:1.2em}.pb{font-size:.87em}.bgrid{gap:6px}.tc{grid-template-columns:1fr}}
+
+/* ══════════════════════════════════════════
+   POKEMON GO BADGE CATCH OVERLAY  (FIX #1)
+   ══════════════════════════════════════════ */
+#ov{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 30%,#1a0050,#000520 50%,#000);opacity:0;pointer-events:none;transition:opacity .5s ease}
+#ov.ova{opacity:1;pointer-events:auto}
+#ov.ovh{display:none}
+.ovstars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.ovs{position:absolute;background:#fff;border-radius:50%;animation:ovtw var(--d,2s) ease-in-out infinite alternate}
+@keyframes ovtw{0%{opacity:.2;transform:scale(.8)}100%{opacity:1;transform:scale(1.3)}}
+.ovdlg{position:relative;z-index:2;background:rgba(20,0,60,.88);border:2px solid rgba(160,100,255,.7);border-radius:14px;padding:11px 28px;text-align:center;backdrop-filter:blur(8px);animation:sdown .5s ease-out;box-shadow:0 0 20px rgba(108,92,231,.4)}
+@keyframes sdown{from{transform:translateY(-40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ovdt{font-family:'Fredoka One',cursive;font-size:1.3em;color:#fff;text-shadow:0 0 16px rgba(200,150,255,.9)}
+.ovcn{font-size:.82em;color:rgba(180,150,255,.85);margin-top:2px}
+.ovba{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.ovorb-wrap{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center}
+.ovrng{position:absolute;border-radius:50%;border:3px solid rgba(160,100,255,.4);animation:ovring 2s ease-out infinite}
+.ovrng:nth-child(1){width:160px;height:160px;animation-delay:0s}
+.ovrng:nth-child(2){width:186px;height:186px;animation-delay:.65s}
+.ovrng:nth-child(3){width:212px;height:212px;animation-delay:1.3s}
+@keyframes ovring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.ovorb{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(from 0deg,#ff6b6b,#ffa502,#ffdd59,#7bed9f,#70a1ff,#5352ed,#a55eea,#ff6b6b);box-shadow:0 0 30px rgba(108,92,231,.7),0 0 60px rgba(255,200,0,.3);animation:ovfloat 2s ease-in-out infinite,holo 3s linear infinite;position:relative;cursor:pointer}
+@keyframes ovfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.ovorb::before{content:'';position:absolute;inset:7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.9),rgba(255,255,255,.5) 30%,rgba(255,255,255,.1) 60%,transparent)}
+.ovq{position:relative;z-index:2;font-size:3.2em;font-weight:900;color:rgba(255,255,255,.95);font-family:'Fredoka One',cursive;text-shadow:0 0 20px rgba(255,255,255,.8)}
+.ove{position:relative;z-index:2;font-size:3.5em;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));display:none}
+.ovorb.ovi{animation:ovifl .4s ease-out!important}
+@keyframes ovifl{0%{box-shadow:0 0 30px rgba(108,92,231,.7),0 0 60px rgba(255,200,0,.3);transform:scale(1)}35%{box-shadow:0 0 80px rgba(255,255,255,.95),0 0 120px rgba(255,200,0,.9);transform:scale(1.35)}100%{box-shadow:0 0 30px rgba(108,92,231,.7),0 0 60px rgba(255,200,0,.3);transform:scale(1)}}
+.ovorb.ovs2{animation:ovshk 1.3s ease-in-out!important}
+@keyframes ovshk{0%,100%{transform:translateY(0) rotate(0)}10%{transform:translateY(-4px) rotate(-9deg)}20%{transform:translateY(2px) rotate(9deg)}30%{transform:translateY(-4px) rotate(-7deg)}40%{transform:translateY(2px) rotate(7deg)}50%{transform:translateY(-4px) rotate(-5deg)}60%{transform:translateY(2px) rotate(5deg)}70%{transform:translateY(-3px) rotate(-3deg)}80%{transform:translateY(1px) rotate(3deg)}}
+/* Star Ball */
+.ovczn{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px}
+.ovhnt{font-family:'Fredoka One',cursive;font-size:.92em;color:rgba(255,255,255,.9);text-shadow:0 2px 8px rgba(0,0,0,.5);letter-spacing:1px;animation:pulse 1.5s ease-in-out infinite}
+.ovball{width:72px;height:72px;border-radius:50%;background:conic-gradient(from 45deg,#ffd700,#ff6b35,#6c5ce7,#00b894,#ffd700);display:flex;align-items:center;justify-content:center;font-size:2em;cursor:pointer;pointer-events:auto;box-shadow:0 0 22px rgba(255,215,0,.8),0 4px 16px rgba(0,0,0,.4);animation:ovbb .75s ease-in-out infinite alternate,holo 2s linear infinite;position:relative;transition:transform .1s;-webkit-tap-highlight-color:transparent}
+.ovball:active{transform:scale(.9)}
+@keyframes ovbb{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-12px) scale(1.06)}}
+.ovball::before{content:'';position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.85),rgba(255,255,255,.2) 40%,transparent 70%)}
+.ovball-i{position:relative;z-index:1}
+.ovball.ovthr{animation:ovthrow .6s ease-in forwards!important;pointer-events:none}
+@keyframes ovthrow{0%{transform:translateY(0) scale(1);opacity:1}60%{transform:translateY(-260px) scale(.75);opacity:1}100%{transform:translateY(-330px) scale(1.6);opacity:0}}
+/* Result */
+.ovres{display:none;flex-direction:column;align-items:center;gap:7px;position:relative;z-index:2}
+.ovres.ovrv{display:flex}
+.ovgot{font-family:'Fredoka One',cursive;font-size:3em;background:linear-gradient(135deg,#ffd700,#ff6b35,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(255,200,0,.5));animation:bpop .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes bpop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.ovcb{width:100px;height:100px;border-radius:50%;background:conic-gradient(from 0deg,#ff6b6b,#ffa502,#ffdd59,#7bed9f,#70a1ff,#5352ed,#a55eea,#ff6b6b);display:flex;align-items:center;justify-content:center;font-size:3em;box-shadow:0 0 30px rgba(255,200,0,.7),0 0 60px rgba(108,92,231,.5);animation:bpop .5s ease-out,holo 3s linear infinite;position:relative}
+.ovcb::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.9),rgba(255,255,255,.4) 40%,transparent 70%)}
+.ovcb .ovbi{position:relative;z-index:1}
+.ovbname{font-family:'Fredoka One',cursive;font-size:1.2em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.ovbmot{font-size:.85em;color:rgba(255,255,255,.82);font-style:italic;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.ovcnt{font-family:'Fredoka One',cursive;font-size:1em;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.5);padding:4px 20px;background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:20px}
+.ovcbtn{margin-top:8px;background:linear-gradient(135deg,#6c5ce7,#a55eea);color:#fff;border:3px solid rgba(255,255,255,.5);padding:12px 44px;border-radius:40px;font-family:'Fredoka One',cursive;font-size:1.1em;cursor:pointer;pointer-events:auto;box-shadow:0 6px 24px rgba(108,92,231,.6);animation:pulse 1.5s ease-in-out infinite;display:none;position:relative;z-index:2;transition:all .2s}
+.ovcbtn.ovcbv{display:block}
+.ovcbtn:hover{transform:scale(1.05);box-shadow:0 8px 32px rgba(108,92,231,.8)}
+/* Confetti */
+.cfp{position:absolute;pointer-events:none;animation:cfall var(--d,1.5s) ease-in var(--dl,0s) forwards;top:0}
+@keyframes cfall{0%{transform:translateY(-20px) rotate(0) scale(1);opacity:1}100%{transform:translateY(100vh) rotate(var(--r,720deg)) scale(.5);opacity:0}}
+</style>
+</head>
+<body>
+<div class="mag-wrap">
+<div class="book" id="book">
+
+<!-- P0 COVER z:100 -->
+<div class="page cover" id="p0" style="z-index:100">
+  <div class="page-front">
+    <div class="cv-badge">Issue #1 — The Beginning</div>
+    <h1>The Super<br>Star Guide</h1>
+    <p class="tagline">Your Secret to Being Amazing!</p>
+    <div class="cv-chars">🦁 🦉 🐱 🦊 🐢 🐝 🦋 🐶 🐿️ ⭐</div>
+    <p style="font-size:.85em;max-width:420px;margin-top:8px;opacity:.9">Meet 10 Super Star characters who each mastered one secret ingredient of success. Catch all 10 holographic badges as you read!</p>
+    <p style="font-size:.8em;opacity:.7;margin-top:10px">For young future champions · Ages 6–10</p>
+    <p class="cv-hint">✨ Click NEXT to begin your adventure! ✨</p>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#6c5ce7,#a55eea)">
+    <div class="deco-back"><div class="di">📖</div><div class="dt">Your adventure begins…</div></div>
+  </div>
+</div>
+
+<!-- P1 INSIDE COVER z:99 -->
+<div class="page" id="p1" style="z-index:99">
+  <div class="page-front" style="background:linear-gradient(135deg,#6c5ce7,#a55eea);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;text-align:center;gap:16px;color:#fff">
+    <div style="font-size:4em">⭐</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:2.2em;text-shadow:0 2px 8px rgba(0,0,0,.3)">Welcome, Super Star!</div>
+    <p style="max-width:400px;line-height:1.7;font-size:1em;opacity:.92">This magazine is packed with secrets about what makes awesome kids — and awesome grown-ups — truly great.</p>
+    <div style="background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:16px;padding:14px 22px;max-width:380px">
+      <div style="font-family:'Fredoka One',cursive;font-size:.9em;letter-spacing:1px;margin-bottom:8px;opacity:.8">🎮 HOW THE BADGE GAME WORKS</div>
+      <p style="font-size:.9em;line-height:1.6">When you arrive at a badge page, a <strong>badge-catching game pops up automatically</strong> — just like Pokémon Go! Tap the <strong>Star Ball ⭐</strong> to throw it and catch your badge. Collect all 10 to become a certified Super Star! 🏆</p>
+    </div>
+    <p style="font-size:.85em;opacity:.7;animation:pulse 2s ease-in-out infinite">→ Click NEXT to continue! →</p>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#ff6b35,#f7931e)">
+    <div class="deco-back"><div class="di">📋</div><div class="dt">What's Inside</div></div>
+  </div>
+</div>
+
+<!-- P2 TABLE OF CONTENTS z:98 -->
+<div class="page" id="p2" style="z-index:98">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph to"><span class="si">📋</span><div><div class="sl">Navigation</div><div class="st">What's Inside This Issue</div></div></div>
+      <div class="pb">
+        <p>Welcome, Super Star in training! Turn each page to discover a new character and <strong>catch a holographic badge</strong>. By the end, you'll have all 10!</p>
+        <ol class="toc-list">
+          <li><span class="tic">🌟</span> Meet the Super Stars <span class="tp">p.2</span></li>
+          <li><span class="tic">🦁</span> Captain Try-Hard's Effort Power <span class="tp">p.3</span> <strong style="color:#6c5ce7">★ Badge 1</strong></li>
+          <li><span class="tic">🦋</span> Flutter's Bounce-Back Secret <span class="tp">p.5</span> <strong style="color:#6c5ce7">★ Badge 2</strong></li>
+          <li><span class="tic">🎯</span> Focus Fiona's Laser Eyes <span class="tp">p.7</span> <strong style="color:#6c5ce7">★ Badge 3</strong></li>
+          <li><span class="tic">🐝</span> Busy Bee's Practice Plan <span class="tp">p.9</span> <strong style="color:#6c5ce7">★ Badge 4</strong></li>
+          <li><span class="tic">🦉</span> Pip's Curiosity Quest <span class="tp">p.11</span> <strong style="color:#6c5ce7">★ Badge 5</strong></li>
+          <li><span class="tic">🐿️</span> Sammy's Tiny Steps <span class="tp">p.13</span> <strong style="color:#6c5ce7">★ Badge 6</strong></li>
+          <li><span class="tic">🐢</span> Steady's Slow-and-Steady Rule <span class="tp">p.15</span> <strong style="color:#6c5ce7">★ Badge 7</strong></li>
+          <li><span class="tic">🐱</span> Kindness Kate's Super Power <span class="tp">p.17</span> <strong style="color:#6c5ce7">★ Badge 8</strong></li>
+          <li><span class="tic">🐶</span> Teamwork Ted's Group Goal <span class="tp">p.19</span> <strong style="color:#6c5ce7">★ Badge 9</strong></li>
+          <li><span class="tic">⭐</span> Starlight's Belief Magic <span class="tp">p.21</span> <strong style="color:#6c5ce7">★ Badge 10</strong></li>
+          <li><span class="tic">🏆</span> Your Complete Badge Collection <span class="tp">p.23</span></li>
+          <li><span class="tic">📚</span> References &amp; Further Reading <span class="tp">p.25</span></li>
+        </ol>
+      </div>
+      <div class="pn"><span>— 1 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#a55eea,#6c5ce7)">
+    <div class="deco-back"><div class="di">🌟</div><div class="dt">Meet the Super Stars!</div></div>
+  </div>
+</div>
+
+<!-- P3 MEET SUPER STARS z:97 -->
+<div class="page" id="p3" style="z-index:97">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tp"><span class="si">🌟</span><div><div class="sl">Chapter 1</div><div class="st">Meet the Super Stars!</div></div></div>
+      <div class="pb">
+        <p>Every champion has a team. The Super Stars are <em>your</em> team — each character mastered one <strong>secret ingredient of success</strong>. As you read their stories, you'll catch their holographic badges!</p>
+        <div class="tc">
+          <div class="cc"><h4>🦁 Captain Try-Hard</h4><p>The bravest lion. Teaches you that <strong>trying your best</strong> beats being "naturally good" every time.</p></div>
+          <div class="cc"><h4>🦋 Flutter the Butterfly</h4><p>Once a caterpillar who failed at everything — then <strong>bounced back</strong> from mistakes and learned to fly!</p></div>
+          <div class="cc"><h4>🦊 Focus Fiona</h4><p>The cleverest fox. She knows how to <strong>pick the one thing that matters</strong> and ignore the rest.</p></div>
+          <div class="cc"><h4>🐝 Busy Bee</h4><p>The hardest-working bee. Teaches <strong>practicing on purpose</strong> — not just buzzing around!</p></div>
+        </div>
+        <div class="csays">
+          <div class="cav">🦁</div>
+          <div class="cbub"><div class="cn cl">Captain Try-Hard says:</div>
+          <div class="ct">"Hey there, Super Star! You don't have to be born special to become amazing. You just have to build the right habits, one at a time. Ready to catch your first badge?"</div></div>
+        </div>
+        <div class="st"><div class="bl">🔮 How Badge Catching Works</div>
+        <p style="font-size:.88em">Arrive at a badge page → <strong>game pops up automatically</strong> → <strong>tap the ⭐ Star Ball</strong> to throw it at the badge orb → catch and collect! Collect all 10 to become a certified Super Star!</p></div>
+      </div>
+      <div class="pn"><span>— 2 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#ff6b35,#e55d2b)">
+    <div class="deco-back"><div class="di">🦁</div><div class="dt">Chapter 2</div><div class="ds">Captain Try-Hard's Effort Power</div></div>
+  </div>
+</div>
+
+<!-- P4 CAPTAIN TRY-HARD STORY z:96 -->
+<div class="page" id="p4" style="z-index:96">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph to"><span class="si">🦁</span><div><div class="sl">Chapter 2</div><div class="st">Captain Try-Hard's Effort Power</div></div></div>
+      <div class="pb">
+        <p>Once upon a time, Captain Try-Hard was the <em>smallest</em> lion cub in his pride. The other cubs could pounce higher, run faster, and roar louder. It seemed like they were just <strong>better</strong>.</p>
+        <div class="si2">🦁👶 ➜ 🦁💪 ➜ 🦁👑</div>
+        <p>But Captain Try-Hard had a secret weapon. While others played after five minutes, he kept going for twenty. While they said "I'm not good at this," he said <strong>"I'm not good at this <em>yet</em>."</strong></p>
+        <div class="wq"><div class="qm">"</div><div class="qt">Success is peace of mind that comes from knowing you did your best.</div><div class="qs">— Paraphrased from John Wooden, <em>They Call Me Coach</em> (1972)</div></div>
+        <p>Year after year, Captain Try-Hard practiced. Not because he was the most talented — he wasn't — but because he <strong>tried harder than anyone else</strong>. He became the greatest lion in the whole jungle.</p>
+        <div class="csays">
+          <div class="cav">🦁</div>
+          <div class="cbub"><div class="cn cl">Captain Try-Hard's Big Lesson:</div>
+          <div class="ct">"Talent is a head start, but effort is the whole race. The kids who <strong>try their best every day</strong> always catch up. Your effort is your superpower — nobody can take it away from you."</div></div>
+        </div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">Every time you try something hard, your brain grows new connections! That's why the word <strong>"yet"</strong> is so magical. Psychologist Carol Dweck calls this a <strong>growth mindset</strong> — your brain can always get better!</p></div>
+      </div>
+      <div class="pn"><span>— 3 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#ff6b35,#f7931e)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P5 APPLY IT + BADGE 1 z:95 -->
+<div class="page" id="p5" style="z-index:95">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph to"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Try Your Best Today</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The "Yet" Game:</strong> Today, catch yourself saying "I can't do this" — and add <strong>"yet"</strong> at the end! "I can't tie my shoes <em>yet</em>." Feel how much better that sounds?</p></div>
+        <div class="tt"><div class="bl">🎮 The 10-Minute Brave</div>
+        <p style="font-size:.9em">Pick the hardest thing on your homework. Set a timer for 10 minutes and give it your absolute best. Don't stop even when it's hard! After 10 minutes, you get a break. (You'll probably want to keep going!)</p></div>
+        <div class="st"><div class="bl">🦁 Captain Try-Hard's Secret</div>
+        <p style="font-size:.88em">Research by psychologist Carol Dweck shows that kids who believe their abilities can grow actually <em>do</em> grow more. Your brain is not fixed — it gets stronger every time you try!</p></div>
+        <div class="bcm" id="bcm1"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc1"><div class="hb unc" id="b1i"><div class="br"></div><span class="bi">🦁</span></div></div>
+        <div class="bn">The Effort Badge</div><div class="bm">"Trying hard is my superpower!"</div>
+        <div class="bst" id="bs1">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 4 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#e84393,#c62878)">
+    <div class="deco-back"><div class="di">🦋</div><div class="dt">Chapter 3</div><div class="ds">Flutter's Bounce-Back Secret</div></div>
+  </div>
+</div>
+
+<!-- P6 FLUTTER STORY z:94 -->
+<div class="page" id="p6" style="z-index:94">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tpk"><span class="si">🦋</span><div><div class="sl">Chapter 3</div><div class="st">Flutter's Bounce-Back Secret</div></div></div>
+      <div class="pb">
+        <p>Flutter wasn't always a butterfly. Once, she was a caterpillar who tried — and failed — at almost everything. She fell off a leaf, spun a lopsided cocoon, and crawled into the wrong flower once.</p>
+        <div class="si2">🐛😢 ➜ 🐛💪 ➜ 🦋✨</div>
+        <p>Every time Flutter failed, the other caterpillars laughed. "Give up!" they said. But Flutter had learned something important: <strong>falling down isn't failing. Staying down is.</strong></p>
+        <p>Flutter picked herself up each time, thought about what went wrong, and tried again — just a little differently. Until one day: she transformed into the most beautiful butterfly anyone had ever seen.</p>
+        <div class="csays">
+          <div class="cav">🦋</div>
+          <div class="cbub"><div class="cn cbt">Flutter's Big Lesson:</div>
+          <div class="ct">"Every mistake has a lesson hidden inside it. When something goes wrong, don't cry forever — <strong>find the lesson</strong>. Then try again with that new wisdom. That's what champions do."</div></div>
+        </div>
+        <div class="sb"><div class="bl">📖 Real-World Champions</div>
+        <p style="font-size:.88em">Many of the world's greatest athletes failed hundreds of times before they succeeded. The key? They treated each failure as information, not defeat. Your brain actually <strong>sends a special signal to pay extra attention</strong> when you make a mistake — it's designed to learn from them!</p></div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">When you make a mistake, your brain sends a "pay attention!" signal. That's why you remember things you got wrong more than things you got right. <strong>Your brain is built to learn from mistakes</strong> — it's like a built-in teacher!</p></div>
+      </div>
+      <div class="pn"><span>— 5 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#e84393,#c62878)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P7 APPLY IT + BADGE 2 z:93 -->
+<div class="page" id="p7" style="z-index:93">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tpk"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Bounce Back Like Flutter</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The 3-Question Bounce-Back:</strong> Next time you make a mistake, ask yourself:<br>1. What happened?<br>2. What can I learn from this?<br>3. What will I do differently next time?<br><em>You just turned a mistake into a lesson!</em></p></div>
+        <div class="st"><div class="bl">🦋 Flutter's Secret</div>
+        <p style="font-size:.88em">Talk to yourself like you'd talk to your best friend. If your friend dropped their ice cream, you'd say "That's okay!" — not "You're so clumsy!" <strong>Be kind to yourself</strong> when things go wrong.</p></div>
+        <div class="bcm" id="bcm2"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc2"><div class="hb unc" id="b2i"><div class="br"></div><span class="bi">🦋</span></div></div>
+        <div class="bn">The Bounce-Back Badge</div><div class="bm">"Mistakes make me stronger."</div>
+        <div class="bst" id="bs2">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 6 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#d63031,#b71c1c)">
+    <div class="deco-back"><div class="di">🦊</div><div class="dt">Chapter 4</div><div class="ds">Focus Fiona's Laser Eyes</div></div>
+  </div>
+</div>
+
+<!-- P8 FOCUS FIONA STORY z:92 -->
+<div class="page" id="p8" style="z-index:92">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tr"><span class="si">🦊</span><div><div class="sl">Chapter 4</div><div class="st">Focus Fiona's Laser Eyes</div></div></div>
+      <div class="pb">
+        <p>Focus Fiona lives in the busiest forest in the world. One day she had a big project: build the coziest den. She also wanted to pick berries, play tag, take a nap, AND help her friend.</p>
+        <div class="si2">🦊🏠 vs 🫐 🏃 😴 🐇</div>
+        <p>Fiona's mom taught her the <strong>"One Thing Rule":</strong> "When everything feels important, <em>nothing</em> is. Pick the ONE thing that matters most right now. Do that first. Then everything else feels easier."</p>
+        <p>Fiona picked building her den. She finished it in just two hours! <strong>Then</strong> she enjoyed everything else — guilt-free!</p>
+        <div class="csays">
+          <div class="cav">🦊</div>
+          <div class="cbub"><div class="cn cfx">Focus Fiona's Big Lesson:</div>
+          <div class="ct">"Being busy doesn't mean you're being productive. The secret is <strong>focus</strong> — picking the one thing that matters most and giving it your full attention. Everything else can wait."</div></div>
+        </div>
+        <div class="tc">
+          <div class="cc" style="border-color:#e17055"><h4 style="color:#e17055">❌ Scattered Squirrel</h4><ul><li>Tries to do everything at once</li><li>Jumps from task to task</li><li>Feels tired but got nothing done</li></ul></div>
+          <div class="cc" style="border-color:#00b894"><h4 style="color:#00b894">✅ Focus Fox</h4><ul><li>Picks ONE thing at a time</li><li>Finishes before starting the next</li><li>Gets more done in less time</li></ul></div>
+        </div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">Your brain can't truly multitask — it switches back and forth, and each switch costs energy! That's why focused kids get homework done faster than distracted ones. When you put distractions away, your brain gets stronger!</p></div>
+      </div>
+      <div class="pn"><span>— 7 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#d63031,#b71c1c)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P9 APPLY IT + BADGE 3 z:91 -->
+<div class="page" id="p9" style="z-index:91">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tr"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Train Your Laser Focus</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The Circle Game:</strong> Look at everything you need to do today. Circle the <strong>ONE thing</strong> that's most important. Do that FIRST — then enjoy everything else after. You'll feel amazing crossing it off!</p></div>
+        <div class="tt"><div class="bl">🎮 The Phone-Away Challenge</div>
+        <p style="font-size:.9em">When doing homework, put toys and screens in another room. Set a timer for 20 minutes. Give ONE task your full attention. Take a 5-minute break after. You'll be shocked at how much you get done!</p></div>
+        <div class="st"><div class="bl">🦊 Focus Fiona's Secret</div>
+        <p style="font-size:.88em">Saying "no" to fun things NOW means you can say "YES" to them later — <strong>guilt-free</strong>. Do the important thing first, then play. That's the champion's way!</p></div>
+        <div class="bcm" id="bcm3"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc3"><div class="hb unc" id="b3i"><div class="br"></div><span class="bi">🦊</span></div></div>
+        <div class="bn">The Focus Badge</div><div class="bm">"I pick the one thing that matters most."</div>
+        <div class="bst" id="bs3">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 8 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#fdcb6e,#e17055)">
+    <div class="deco-back"><div class="di">🐝</div><div class="dt">Chapter 5</div><div class="ds">Busy Bee's Practice Plan</div></div>
+  </div>
+</div>
+
+<!-- P10 BUSY BEE STORY z:90 -->
+<div class="page" id="p10" style="z-index:90">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph ty"><span class="si">🐝</span><div><div class="sl">Chapter 5</div><div class="st">Busy Bee's Practice Plan</div></div></div>
+      <div class="pb">
+        <p>Busy Bee is the most skilled bee in the whole hive. When younger bees asked <strong>"How are you so good?"</strong> she didn't say "I'm just talented." She said: <strong>"I practice on purpose."</strong></p>
+        <div class="si2">🐝🌸 ➜ 🎯 ➜ 🍯✨</div>
+        <p>Most bees just fly around without thinking. Busy Bee picks <strong>ONE skill</strong> to improve each day — not just repeating the same thing over and over, but finding one tiny thing to get better at.</p>
+        <div class="csays">
+          <div class="cav">🐝</div>
+          <div class="cbub"><div class="cn" style="color:#e6a800">Busy Bee's Big Lesson:</div>
+          <div class="ct">"There's a big difference between <strong>repeating</strong> and <strong>practicing</strong>. If you shoot a basketball the same sloppy way 100 times, you've just practiced being sloppy! Real practice means picking one tiny thing to improve each time."</div></div>
+        </div>
+        <div class="tc">
+          <div class="cc"><h4>📅 Practice with Purpose</h4><ul style="font-size:.85em"><li>Pick ONE thing to improve</li><li>Push yourself just a little</li><li>Check: "Did I get better?"</li><li>Celebrate tiny improvements!</li></ul></div>
+          <div class="cc"><h4>🔁 Just Repeating</h4><ul style="font-size:.85em"><li>Do the same thing, same way</li><li>Stay in your comfort zone</li><li>Wonder why you're not improving</li><li>Feel frustrated</li></ul></div>
+        </div>
+        <div class="sb"><div class="bl">📖 True Story Time</div>
+        <p style="font-size:.88em">The greatest athletes in history practiced the <strong>exact same move</strong> hundreds of times — but each time, they focused on making one tiny thing better. Scientists call this <strong>deliberate practice</strong> (Ericsson &amp; Pool, 2016) — it's what separates good from truly great.</p></div>
+      </div>
+      <div class="pn"><span>— 9 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#fdcb6e,#e17055)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P11 APPLY IT + BADGE 4 z:89 -->
+<div class="page" id="p11" style="z-index:89">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph ty"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Practice Like Busy Bee</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>Fill in the blank before every practice:</strong><br><em>"Today I'm getting better at ________."</em><br>Make it specific! Not "getting better at piano" — but "playing that one tricky measure without stumbling."</p></div>
+        <div class="st"><div class="bl">🐝 Busy Bee's Secret</div>
+        <p style="font-size:.88em">After you practice, ask: <strong>"Did I get a tiny bit better at my one thing?"</strong> If yes — celebrate it! If no — pick something smaller next time. The key is to always have a target.</p></div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">The biggest growth happens when you focus on what's <em>just a little too hard</em> for you. It should feel challenging but beatable — like a video game level that's tough but not impossible!</p></div>
+        <div class="bcm" id="bcm4"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc4"><div class="hb unc" id="b4i"><div class="br"></div><span class="bi">🐝</span></div></div>
+        <div class="bn">The Practice Badge</div><div class="bm">"I don't just repeat — I improve."</div>
+        <div class="bst" id="bs4">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 10 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#6c5ce7,#5f3dc3)">
+    <div class="deco-back"><div class="di">🦉</div><div class="dt">Chapter 6</div><div class="ds">Pip's Curiosity Quest</div></div>
+  </div>
+</div>
+
+<!-- P12 PIP OWL STORY z:88 -->
+<div class="page" id="p12" style="z-index:88">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tp"><span class="si">🦉</span><div><div class="sl">Chapter 6</div><div class="st">Pip's Curiosity Quest</div></div></div>
+      <div class="pb">
+        <p>Pip is the smallest owl in the forest — but also the <strong>smartest</strong>. Not because he was born knowing everything. But because Pip asks <strong>amazing questions</strong>.</p>
+        <div class="csays">
+          <div class="cav">🦉</div>
+          <div class="cbub"><div class="cn co">Pip's Favorite Questions:</div>
+          <div class="ct">"Why do leaves change color?" "How do ants know where to go?" "What happens inside a seed when it grows?" <strong>"Can you teach me?"</strong></div></div>
+        </div>
+        <p>The older animals in the forest <em>love</em> answering Pip's questions — because <strong>people love sharing what they know</strong> with someone who is genuinely curious.</p>
+        <div class="si2">🦉❓ ➜ 📚💡 ➜ 🦉🎓</div>
+        <p>Pip discovered something powerful: <strong>curiosity is a magnet for teachers</strong>. When you ask great questions, knowledgeable people want to help you. Curious kids get a team of teachers without even trying!</p>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">When you're curious about something, your brain releases <strong>dopamine</strong> — the same happy chemical you get from your favorite snack. Curiosity literally makes your brain want to learn more!</p></div>
+        <div class="wq"><div class="qm">"</div><div class="qt">The more you learn, the more you realize how much more there is to learn.</div><div class="qs">— A timeless wisdom shared by great thinkers throughout history</div></div>
+      </div>
+      <div class="pn"><span>— 11 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#6c5ce7,#5f3dc3)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P13 APPLY IT + BADGE 5 z:87 -->
+<div class="page" id="p13" style="z-index:87">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tp"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Be Curious Like Pip</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The 3-Question Day:</strong> Today, ask THREE "why" or "how" questions about things you thought you already knew. Why is the sky blue? How do birds know where to fly? You'll be surprised at the answers!</p></div>
+        <div class="tt"><div class="bl">🎮 The "Teach Me" Game</div>
+        <p style="font-size:.9em">Find a grown-up and ask: <em>"What's something you're really good at? Can you teach me one thing about it?"</em> You'll learn something amazing AND make their day!</p></div>
+        <div class="st"><div class="bl">🦉 Pip's Secret</div>
+        <p style="font-size:.88em">Never feel silly for asking a question. The only silly thing is <strong>wondering forever when you could just ask</strong>. Smart people aren't smart because they know everything — they're smart because they know how to ask for what they don't know.</p></div>
+        <div class="bcm" id="bcm5"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc5"><div class="hb unc" id="b5i"><div class="br"></div><span class="bi">🦉</span></div></div>
+        <div class="bn">The Curiosity Badge</div><div class="bm">"I ask great questions every day."</div>
+        <div class="bst" id="bs5">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 12 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#00b894,#00a381)">
+    <div class="deco-back"><div class="di">🐿️</div><div class="dt">Chapter 7</div><div class="ds">Sammy's Tiny Steps</div></div>
+  </div>
+</div>
+
+<!-- P14 SAMMY SQUIRREL STORY z:86 -->
+<div class="page" id="p14" style="z-index:86">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tg"><span class="si">🐿️</span><div><div class="sl">Chapter 7</div><div class="st">Sammy's Tiny Steps</div></div></div>
+      <div class="pb">
+        <p>Sammy the Squirrel has a dream: build the biggest acorn collection in the forest by winter. When others laughed and said <strong>"That's impossible!"</strong> Sammy didn't get discouraged. Sammy had a plan.</p>
+        <p>Instead of trying to gather 100 acorns in one day, Sammy gathered <strong>just 5 acorns a day</strong>. Five doesn't sound like much, does it?</p>
+        <div class="tc">
+          <div class="cc" style="text-align:center"><p style="font-size:1.2em;font-weight:700">5 acorns/day</p><p>× 30 days</p><p style="font-size:1.5em;font-weight:700;color:#00b894">= 150 acorns!</p></div>
+          <div class="cc"><p style="font-size:.9em">That's <strong>50 more</strong> than the original goal — just by doing a tiny bit every single day!</p><p style="font-size:.9em;margin-top:8px">This is called <strong>compounding</strong> — small things that add up to something huge.</p></div>
+        </div>
+        <div class="csays">
+          <div class="cav">🐿️</div>
+          <div class="cbub"><div class="cn" style="color:#d35400">Sammy's Big Lesson:</div>
+          <div class="ct">"Don't say 'I want to read 100 books.' Say 'I'll read for 15 minutes tonight.' Small goals are easy to hit. When you hit them, you feel great. And that feeling makes you want to set the next one."</div></div>
+        </div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">When a goal feels too big, your brain's fear center lights up — it gets stressed! But when you break it into tiny steps, your brain's reward center activates <strong>each time you complete a step</strong>. Trick your brain with tiny steps!</p></div>
+      </div>
+      <div class="pn"><span>— 13 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#00b894,#00a381)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P15 APPLY IT + BADGE 6 z:85 -->
+<div class="page" id="p15" style="z-index:85">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tg"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Take Tiny Steps Like Sammy</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The 3-Step Breakdown:</strong> Think of one big goal. Break it into 3 tiny steps for this week:<br>Big goal: "Get better at math"<br>Step 1: Practice 5 problems tonight<br>Step 2: Ask my teacher one question<br>Step 3: Show what I learned to someone</p></div>
+        <div class="st"><div class="bl">🐿️ Sammy's Secret</div>
+        <p style="font-size:.88em">A great champion coach said you have to build success like a pyramid — <strong>one block at a time</strong>. You can't skip to the top. Your goals work the same way. Build your success pyramid, one tiny block at a time!</p></div>
+        <div class="bcm" id="bcm6"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc6"><div class="hb unc" id="b6i"><div class="br"></div><span class="bi">🐿️</span></div></div>
+        <div class="bn">The Tiny Steps Badge</div><div class="bm">"Small steps every day lead to big results."</div>
+        <div class="bst" id="bs6">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 14 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#0984e3,#0770c2)">
+    <div class="deco-back"><div class="di">🐢</div><div class="dt">Chapter 8</div><div class="ds">Steady's Slow-and-Steady Rule</div></div>
+  </div>
+</div>
+
+<!-- P16 STEADY TURTLE STORY z:84 -->
+<div class="page" id="p16" style="z-index:84">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tb"><span class="si">🐢</span><div><div class="sl">Chapter 8</div><div class="st">Steady's Slow-and-Steady Rule</div></div></div>
+      <div class="pb">
+        <p>Steady the Turtle isn't the fastest animal in the forest. But Steady has never lost a race — not because of speed, but because of <strong>consistency</strong>.</p>
+        <div class="si2">🐇⚡😴 vs 🐢🚶🚶🚶🏁</div>
+        <p>"The hare runs super fast — but only sometimes. He gets tired, distracted, takes naps. I might be slow, but I <strong>never stop</strong>. And the one who never stops always beats the one who starts fast and quits."</p>
+        <div class="csays">
+          <div class="cav">🐢</div>
+          <div class="cbub"><div class="cn ctu">Steady's Big Lesson:</div>
+          <div class="ct">"Doing a little bit every single day is way more powerful than doing a TON one day and nothing for a week. It's like brushing your teeth — you don't brush for 7 hours on Sunday! You brush a little, every day. <strong>That's how habits work.</strong>"</div></div>
+        </div>
+        <div class="tc">
+          <div class="cc"><h4>⛓️ Build Your Chain!</h4>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:.7em;text-align:center;margin-top:6px">
+            <div style="background:#dfe6e9;padding:2px;border-radius:2px">M ✕</div><div style="background:#dfe6e9;padding:2px;border-radius:2px">T ✕</div><div style="background:#dfe6e9;padding:2px;border-radius:2px">W ✕</div><div style="background:#dfe6e9;padding:2px;border-radius:2px">T ✕</div><div style="background:#dfe6e9;padding:2px;border-radius:2px">F ✕</div><div style="background:#dfe6e9;padding:2px;border-radius:2px">S ✕</div><div style="background:#dfe6e9;padding:2px;border-radius:2px">S ✕</div>
+          </div>
+          <p style="font-size:.82em;margin-top:6px;color:#00b894;font-weight:700">7 Xs = a chain! Don't break the chain!</p></div>
+          <div class="cc"><h4>📅 The Chain Rule</h4><p style="font-size:.84em">Every day you do your habit, add a link. After a week: 7 links. After a month: 30 links! <strong>A long chain is hard to break</strong> — it becomes part of who you are.</p></div>
+        </div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">Research shows it takes an average of <strong>66 days</strong> for a new habit to become automatic (Lally et al., 2010). That's just 2 months! After that, it's as natural as brushing your teeth.</p></div>
+      </div>
+      <div class="pn"><span>— 15 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#0984e3,#0770c2)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P17 APPLY IT + BADGE 7 z:83 -->
+<div class="page" id="p17" style="z-index:83">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tb"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Be Steady Like Steady</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The Calendar Chain:</strong> Pick ONE tiny habit — reading 5 pages, doing 5 push-ups, practicing 3 minutes of an instrument. Get a calendar and put a big X on every day you do it. <strong>Don't break the chain!</strong></p></div>
+        <div class="st"><div class="bl">🐢 Steady's Secret</div>
+        <p style="font-size:.88em">On days when you feel lazy, do a <strong>tiny version</strong> of your habit. Can't read 10 pages? Read 1 page. Can't practice 20 minutes? Practice 1 minute. <strong>Keep the chain going</strong> — one page is a thousand times better than zero!</p></div>
+        <div class="wq"><div class="qm">"</div><div class="qt">Don't wish it were easier. Wish you were better — one small step at a time.</div><div class="qs">— A timeless wisdom for anyone building great habits</div></div>
+        <div class="bcm" id="bcm7"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc7"><div class="hb unc" id="b7i"><div class="br"></div><span class="bi">🐢</span></div></div>
+        <div class="bn">The Consistency Badge</div><div class="bm">"I show up every single day."</div>
+        <div class="bst" id="bs7">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 16 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#00b894,#2e7d32)">
+    <div class="deco-back"><div class="di">🐱</div><div class="dt">Chapter 9</div><div class="ds">Kindness Kate's Super Power</div></div>
+  </div>
+</div>
+
+<!-- P18 KINDNESS KATE STORY z:82 -->
+<div class="page" id="p18" style="z-index:82">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tg"><span class="si">🐱</span><div><div class="sl">Chapter 9</div><div class="st">Kindness Kate's Super Power</div></div></div>
+      <div class="pb">
+        <p>Kindness Kate is a small kitten with the biggest heart in the forest. She's not the fastest or loudest. But she is, without a doubt, the <strong>most loved</strong> animal in the whole forest — because Kate treats everyone with respect and kindness.</p>
+        <div class="si2">🐱💛 ➜ 🦁🤝🐜 ➜ 🌳❤️</div>
+        <p>One day, Kate got stuck in a thorny bush and called for help — and <strong>every animal in the forest came running</strong>. Her kindness had built something invisible but powerful: <strong>trust</strong>. And trust is the strongest force in any community.</p>
+        <div class="csays">
+          <div class="cav">🐱</div>
+          <div class="cbub"><div class="cn cc">Kindness Kate's Big Lesson:</div>
+          <div class="ct">"Kindness isn't weakness — it's the <strong>strongest superpower</strong> there is. When you're kind to people, they trust you. When they trust you, they help you. The greatest leaders in history were known as much for their kindness as their strength."</div></div>
+        </div>
+        <div class="sb"><div class="bl">📖 True Story Time</div>
+        <p style="font-size:.88em">A legendary coach who won 10 championships in 12 years was known for treating <strong>everyone</strong> with respect — from star players to the person who cleaned the gym. He believed that respect and character were the true foundation of any great team.</p>
+        <p style="font-size:.78em;color:#636e72;margin-top:3px">— Inspired by the leadership philosophy in John Wooden, <em>Wooden on Leadership</em> (2005)</p></div>
+      </div>
+      <div class="pn"><span>— 17 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#00b894,#2e7d32)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P19 APPLY IT + BADGE 8 z:81 -->
+<div class="page" id="p19" style="z-index:81">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tg"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Be Kind Like Kate</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The Invisible Kindness Mission:</strong> Today, do one kind thing for someone who can <em>never</em> do anything in return for you. Hold a door. Pick up litter. Give a compliment to someone who looks sad. Do it secretly — nobody needs to know. That's <strong>real</strong> kindness.</p></div>
+        <div class="tt"><div class="bl">🎮 The 3-Kind-Things-a-Day Game</div>
+        <p style="font-size:.9em">For the next 3 days, do THREE kind things each day. Keep a tally on your fingers. At bedtime, tell your parents what you did!</p></div>
+        <div class="st"><div class="bl">🐱 Kindness Kate's Secret</div>
+        <p style="font-size:.88em">Being kind doesn't mean you can't be strong or competitive. <strong>Kind and strong go together perfectly.</strong> The greatest champions are kind AND fierce — they just never let being fierce make them mean.</p></div>
+        <div class="bcm" id="bcm8"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc8"><div class="hb unc" id="b8i"><div class="br"></div><span class="bi">🐱</span></div></div>
+        <div class="bn">The Kindness Badge</div><div class="bm">"Kindness is my strongest superpower."</div>
+        <div class="bst" id="bs8">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 18 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#00cec9,#00a8a5)">
+    <div class="deco-back"><div class="di">🐶</div><div class="dt">Chapter 10</div><div class="ds">Teamwork Ted's Group Goal</div></div>
+  </div>
+</div>
+
+<!-- P20 TEAMWORK TED STORY z:80 -->
+<div class="page" id="p20" style="z-index:80">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph ttl"><span class="si">🐶</span><div><div class="sl">Chapter 10</div><div class="st">Teamwork Ted's Group Goal</div></div></div>
+      <div class="pb">
+        <p>Teamwork Ted was a golden retriever who used to think he was the best player on every team. He'd score all the points, take all the credit, and say <strong>"I did it myself!"</strong> But his team kept losing.</p>
+        <div class="si2">🐶⭐➡️🏆❌  vs  🐶🐱🦊🐢➡️🤝➡️🏆✅</div>
+        <p>His coach said something that changed everything: <em>"Ted, being the best player on a bad team is worse than being a good player on a great team. <strong>Make your teammates better</strong> — and you'll win everything."</em></p>
+        <p>Ted changed. He started passing instead of hoarding. He cheered on his teammates. And the whole team — including Ted — got better!</p>
+        <div class="csays">
+          <div class="cav">🐶</div>
+          <div class="cbub"><div class="cn cdg">Teamwork Ted's Big Lesson:</div>
+          <div class="ct">"Real leaders don't make themselves look good — they make <strong>everyone around them</strong> look good. When you help someone else get better, you get better too. That's called <strong>leadership</strong>, and it's the most important skill you'll ever learn."</div></div>
+        </div>
+        <div class="ff"><div class="bl">🧠 Brain Fact</div>
+        <p style="font-size:.88em">Studies show that people who help others learn actually <strong>remember the material better themselves</strong>! Teaching something to a friend is one of the best ways to learn it. Helping a classmate with math makes your own brain stronger too!</p></div>
+      </div>
+      <div class="pn"><span>— 19 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#00cec9,#00a8a5)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your Badge</div></div>
+  </div>
+</div>
+
+<!-- P21 APPLY IT + BADGE 9 z:79 -->
+<div class="page" id="p21" style="z-index:79">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph ttl"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Lead Like Ted</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The Helper Challenge:</strong> Today, find one way to help a friend or classmate. Explain something you understand to someone who doesn't. Pass the ball instead of shooting. Share your supplies. <strong>Make someone else better</strong> — and watch how it makes you better too.</p></div>
+        <div class="st"><div class="bl">🐶 Teamwork Ted's Secret</div>
+        <p style="font-size:.88em">Great leaders ask: <strong>"How can I help this person succeed?"</strong> instead of <strong>"How can I look good?"</strong> That one question changes everything. Leaders who focus on other people end up being the most successful — because everyone wants to follow someone who lifts them up!</p></div>
+        <div class="tt"><div class="bl">🎮 The "We" Word Game</div>
+        <p style="font-size:.9em">For the rest of today, try to say <strong>"we"</strong> instead of <strong>"I"</strong>. Instead of "I scored a goal!" say "We scored a goal!" Notice how different that feels!</p></div>
+        <div class="bcm" id="bcm9"><div class="bcl">🏅 Badge Unlocked!</div>
+        <div class="scon" id="sc9"><div class="hb unc" id="b9i"><div class="br"></div><span class="bi">🐶</span></div></div>
+        <div class="bn">The Teamwork Badge</div><div class="bm">"I make everyone around me better."</div>
+        <div class="bst" id="bs9">✨ Badge appears automatically when you arrive here! ✨</div></div>
+      </div>
+      <div class="pn"><span>— 20 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#f39c12,#e67e22)">
+    <div class="deco-back"><div class="di">⭐</div><div class="dt">Chapter 11</div><div class="ds">Starlight's Belief Magic</div></div>
+  </div>
+</div>
+
+<!-- P22 STARLIGHT STORY z:78 -->
+<div class="page" id="p22" style="z-index:78">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph ty"><span class="si">⭐</span><div><div class="sl">Chapter 11</div><div class="st">Starlight's Belief Magic</div></div></div>
+      <div class="pb">
+        <p>Starlight is the youngest member of the Super Stars — a <strong>literal star</strong> that lives in the night sky above the forest. From up high, Starlight watches all the animals and has noticed something important.</p>
+        <div class="si2">⭐👀 ➜ 🌙💭 ➜ 🌅💪</div>
+        <p>The animals who succeed aren't the ones who are born special. They're the ones who <strong>believe</strong> they can become special.</p>
+        <div class="csays">
+          <div class="cav">⭐</div>
+          <div class="cbub"><div class="cn cst">Starlight's Big Lesson:</div>
+          <div class="ct">"Here's the magic: the way you talk to <em>yourself</em> matters more than what others say about you. If you tell yourself 'I'm not good enough,' it becomes true. But if you tell yourself 'I'm growing every day,' you'll <strong>start doing</strong> things that prove it."</div></div>
+        </div>
+        <div class="tc">
+          <div class="cc" style="border-color:#d63031"><h4 style="color:#d63031">❌ Fixed Mindset Talk</h4><ul style="font-size:.82em"><li>"I'm just not smart."</li><li>"I'll never be good at this."</li><li>"They're just naturally better."</li><li>"I give up."</li></ul></div>
+          <div class="cc" style="border-color:#00b894"><h4 style="color:#00b894">✅ Growth Mindset Talk</h4><ul style="font-size:.82em"><li>"I'm not good at this <em>yet</em>."</li><li>"Mistakes help me learn."</li><li>"I can get better with practice."</li><li>"This is hard — and that's okay."</li></ul></div>
+        </div>
+        <div class="wq"><div class="qm">"</div><div class="qt">Make the effort to become the best of which you are capable — and that brings you peace.</div><div class="qs">— Paraphrased from John Wooden's philosophy</div></div>
+      </div>
+      <div class="pn"><span>— 21 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#f39c12,#e67e22)">
+    <div class="deco-back"><div class="di">💡</div><div class="dt">Apply It!</div><div class="ds">+ Catch Your FINAL Badge!</div></div>
+  </div>
+</div>
+
+<!-- P23 APPLY IT + BADGE 10 z:77 -->
+<div class="page" id="p23" style="z-index:77">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph ty"><span class="si">💡</span><div><div class="sl">Apply It</div><div class="st">Believe Like Starlight</div></div></div>
+      <div class="pb">
+        <div class="tt"><div class="bl">🌟 Your Super Star Challenge</div>
+        <p style="font-size:.9em"><strong>The 3-Proud-Things Bedtime Ritual:</strong> Every night before bed, say THREE things you're proud of from that day. They can be tiny: "I helped my sibling." "I tried a new food." "I didn't give up when math was hard." This trains your brain to notice the good stuff about <strong>you</strong>.</p></div>
+        <div class="st"><div class="bl">⭐ Starlight's Secret</div>
+        <p style="font-size:.88em">Your worth is not your grades or your scores. <strong>Your worth is YOU</strong> — being kind, being curious, and trying your best. Be proud of who you are <em>right now</em> while also working to become even better.</p></div>
+        <div class="bcm" id="bcm10" style="border-color:#f39c12;background:linear-gradient(135deg,#fff9e6,#fff3cc)">
+          <div class="bcl" style="color:#e67e22">🏆 FINAL Badge Unlocked!</div>
+          <div class="scon" id="sc10"><div class="hb unc" id="b10i" style="width:100px;height:100px;font-size:3em"><div class="br"></div><span class="bi">⭐</span></div></div>
+          <div class="bn" style="font-size:1.05em">The Belief Badge</div><div class="bm">"I am enough, and I'm growing every day."</div>
+          <div class="bst" id="bs10">🎊 FINAL Badge — appears automatically! 🎊</div>
+        </div>
+      </div>
+      <div class="pn"><span>— 22 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#6c5ce7,#a55eea)">
+    <div class="deco-back"><div class="di">🏆</div><div class="dt">Badge Album</div><div class="ds">All 10 Badges!</div></div>
+  </div>
+</div>
+
+<!-- P24 BADGE COLLECTION z:76 -->
+<div class="page" id="p24" style="z-index:76">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tp"><span class="si">🏆</span><div><div class="sl">Badge Album</div><div class="st">Your Complete Badge Collection</div></div></div>
+      <div class="pb" style="text-align:center">
+        <p style="margin-bottom:10px">Congratulations, Super Star! You've earned all <strong>10 holographic badges</strong>. Each one is a secret ingredient of success you can use forever. Print this page and put it on your wall!</p>
+        <div class="bgrid">
+          <div class="bgi unc" id="ab1"><div class="mb"><span class="bi">🦁</span></div><div class="bgn">Effort</div><div class="bgm">Try your best every day</div></div>
+          <div class="bgi unc" id="ab2"><div class="mb"><span class="bi">🦋</span></div><div class="bgn">Bounce-Back</div><div class="bgm">Mistakes make me stronger</div></div>
+          <div class="bgi unc" id="ab3"><div class="mb"><span class="bi">🦊</span></div><div class="bgn">Focus</div><div class="bgm">Pick what matters most</div></div>
+          <div class="bgi unc" id="ab4"><div class="mb"><span class="bi">🐝</span></div><div class="bgn">Practice</div><div class="bgm">Improve, don't just repeat</div></div>
+          <div class="bgi unc" id="ab5"><div class="mb"><span class="bi">🦉</span></div><div class="bgn">Curiosity</div><div class="bgm">Ask great questions</div></div>
+          <div class="bgi unc" id="ab6"><div class="mb"><span class="bi">🐿️</span></div><div class="bgn">Tiny Steps</div><div class="bgm">Small steps, big results</div></div>
+          <div class="bgi unc" id="ab7"><div class="mb"><span class="bi">🐢</span></div><div class="bgn">Consistency</div><div class="bgm">Show up every day</div></div>
+          <div class="bgi unc" id="ab8"><div class="mb"><span class="bi">🐱</span></div><div class="bgn">Kindness</div><div class="bgm">Kindness is strength</div></div>
+          <div class="bgi unc" id="ab9"><div class="mb"><span class="bi">🐶</span></div><div class="bgn">Teamwork</div><div class="bgm">Make others better</div></div>
+          <div class="bgi unc" id="ab10"><div class="mb"><span class="bi">⭐</span></div><div class="bgn">Belief</div><div class="bgm">I am enough &amp; growing</div></div>
+        </div>
+        <div class="wq" style="margin-top:12px"><div class="qt" style="font-size:.92em">Big success = small habits × every single day × never giving up</div><div class="qs">The Super Star Formula ⭐</div></div>
+        <button onclick="window.print()" style="margin-top:10px;background:linear-gradient(135deg,#6c5ce7,#a55eea);color:#fff;border:none;padding:10px 26px;border-radius:20px;font-family:'Fredoka One',cursive;font-size:.9em;cursor:pointer;box-shadow:0 4px 12px rgba(108,92,231,.4);pointer-events:auto">🖨️ Print This Page</button>
+      </div>
+      <div class="pn"><span>— 23 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#2d3436,#636e72)">
+    <div class="deco-back"><div class="di">📚</div><div class="dt">Parent &amp; Teacher Guide</div></div>
+  </div>
+</div>
+
+<!-- P25 PARENT/TEACHER GUIDE z:75 -->
+<div class="page" id="p25" style="z-index:75">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tb"><span class="si">📚</span><div><div class="sl">For Grown-Ups</div><div class="st">Parent &amp; Teacher Guide</div></div></div>
+      <div class="pb">
+        <p>The <strong>10 Super Star Habits</strong> are grounded in research and wisdom from the world's greatest performers, coaches, and scientists:</p>
+        <table style="width:100%;font-size:.76em;border-collapse:collapse;margin:10px 0">
+          <thead><tr style="background:#dfe6e9"><th style="padding:5px 7px;text-align:left;border:1px solid #b2bec3">Badge</th><th style="padding:5px 7px;text-align:left;border:1px solid #b2bec3">Habit</th><th style="padding:5px 7px;text-align:left;border:1px solid #b2bec3">Research Foundation</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🦁</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Effort over talent</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Growth mindset (Dweck, 2006)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🦋</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Resilience from failure</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Antifragility (Taleb, 2012)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🦊</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Strategic focus</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Essentialism (McKeown, 2014)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🐝</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Deliberate practice</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Ericsson &amp; Pool (2016)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🦉</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Curiosity &amp; questioning</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Inquiry-based learning research</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🐿️</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Small goals &amp; compounding</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Atomic habits (Clear, 2018)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🐢</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Daily consistency</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Habit formation — Lally et al. (2010)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🐱</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Kindness &amp; character</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Character leadership (Wooden)</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">🐶</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Teamwork &amp; leadership</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Leadership multiplication research</td></tr>
+            <tr><td style="padding:3px 6px;border:1px solid #dfe6e9">⭐</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Self-belief &amp; growth mindset</td><td style="padding:3px 6px;border:1px solid #dfe6e9">Identity-based habits; Dweck (2006)</td></tr>
+          </tbody>
+        </table>
+        <div class="st"><div class="bl">💬 Discussion Prompts for Reading Aloud</div>
+        <ul style="font-size:.82em;padding-left:16px;line-height:1.8">
+          <li>"Which Super Star character are you most like? Which one do you want to be more like?"</li>
+          <li>"Can you think of a time you bounced back from a mistake, like Flutter?"</li>
+          <li>"What's one tiny step you could take today toward a big goal?"</li>
+          <li>"Who's someone in your life who believes in you, like Starlight?"</li>
+        </ul></div>
+        <p style="font-size:.72em;color:#636e72;margin-top:8px;text-align:center">All character names, stories, and animal personas are original creations. Wisdom inspired by researchers and coaches credited in the References page.</p>
+      </div>
+      <div class="pn"><span>— 24 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(135deg,#2d3436,#636e72)">
+    <div class="deco-back"><div class="di">📖</div><div class="dt">References</div></div>
+  </div>
+</div>
+
+<!-- P26 REFERENCES z:74 -->
+<div class="page" id="p26" style="z-index:74">
+  <div class="page-front">
+    <div class="pc">
+      <div class="ph tp"><span class="si">📖</span><div><div class="sl">Sources</div><div class="st">References &amp; Recommended Reading</div></div></div>
+      <div class="pb">
+        <p style="font-size:.82em;color:#636e72;margin-bottom:10px">The lessons in <em>The Super Star Guide</em> are inspired by the following works. All direct quotes have been paraphrased to create original, age-appropriate content for young readers.</p>
+        <div class="re"><span class="ra">Dweck, Carol S.</span> <span class="rti">Mindset: The New Psychology of Success.</span> <span class="rd">Ballantine Books, 2006.</span><span class="rtag">🦁⭐ Growth Mindset</span><div class="rn">Foundation for Captain Try-Hard's "yet" concept and Starlight's growth mindset framework.</div></div>
+        <div class="re"><span class="ra">Wooden, John &amp; Jamison, Steve.</span> <span class="rti">Wooden: A Lifetime of Observations and Reflections.</span> <span class="rd">McGraw-Hill, 1997. Also: <em>Wooden on Leadership</em>, McGraw-Hill, 2005.</span><span class="rtag">🐱🐿️ Character &amp; Goals</span><div class="rn">Foundation for Kindness Kate's character-based leadership and Sammy's goal-pyramid concept.</div></div>
+        <div class="re"><span class="ra">McKeown, Greg.</span> <span class="rti">Essentialism: The Disciplined Pursuit of Less.</span> <span class="rd">Crown Business, 2014.</span><span class="rtag">🦊 Focus</span><div class="rn">Foundation for Focus Fiona's "One Thing Rule" and prioritization framework.</div></div>
+        <div class="re"><span class="ra">Clear, James.</span> <span class="rti">Atomic Habits: An Easy &amp; Proven Way to Build Good Habits &amp; Break Bad Ones.</span> <span class="rd">Avery, 2018.</span><span class="rtag">🐿️🐢 Habits</span><div class="rn">Foundation for Sammy's compounding steps and Steady's daily consistency chain.</div></div>
+        <div class="re"><span class="ra">Ericsson, Anders &amp; Pool, Robert.</span> <span class="rti">Peak: Secrets from the New Science of Expertise.</span> <span class="rd">Houghton Mifflin Harcourt, 2016.</span><span class="rtag">🐝 Practice</span><div class="rn">Foundation for Busy Bee's deliberate practice philosophy.</div></div>
+        <div class="re"><span class="ra">Walsh, Bill, Jamison, Steve &amp; Walsh, Craig.</span> <span class="rti">The Score Takes Care of Itself.</span> <span class="rd">Portfolio, 2009.</span><span class="rtag">🦊 Focus</span><div class="rn">Foundation for Focus Fiona's "fundamentals first" coaching philosophy.</div></div>
+        <div class="re"><span class="ra">Taleb, Nassim Nicholas.</span> <span class="rti">Antifragile: Things That Gain from Disorder.</span> <span class="rd">Random House, 2012.</span><span class="rtag">🦋 Resilience</span><div class="rn">Foundation for Flutter's concept of growing stronger through adversity.</div></div>
+        <div class="re"><span class="ra">Lally, Philippa et al.</span> <span class="rti">"How are habits formed: Modelling habit formation in the real world."</span> <span class="rd"><em>European Journal of Social Psychology</em>, 40(6), 998–1009. 2010.</span><span class="rtag">🐢 Consistency</span><div class="rn">Foundation for Steady's "66-day habit formation" brain fact.</div></div>
+        <p style="font-size:.72em;color:#b2bec3;margin-top:10px;text-align:center">All original characters, storylines, and creative content in <em>The Super Star Guide</em> are original works.<br>No copyrighted characters, song lyrics, or trademarked material have been reproduced.</p>
+      </div>
+      <div class="pn"><span>— 25 —</span></div>
+    </div>
+  </div>
+  <div class="page-back" style="background:linear-gradient(160deg,#00b894,#6c5ce7)">
+    <div class="deco-back"><div class="di">⭐🏆⭐</div><div class="dt">You Did It!</div></div>
+  </div>
+</div>
+
+<!-- P27 BACK COVER z:73 -->
+<div class="page bcp" id="p27" style="z-index:73">
+  <div class="page-front">
+    <div style="font-size:3em;margin-bottom:14px">⭐🏆⭐</div>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:2em;margin-bottom:14px">You Did It, Super Star!</h2>
+    <p style="max-width:450px;line-height:1.6;font-size:1em;margin-bottom:12px">You just collected all 10 holographic badges and learned the secret ingredients of success. Remember — great people aren't born. They're built, one habit at a time.</p>
+    <p style="font-weight:700;font-size:1.1em;margin-bottom:12px">Start today. Start small. Stay consistent.</p>
+    <p style="opacity:.8;margin-bottom:20px">The best version of you is waiting. 🌟</p>
+    <div style="font-size:.8em;opacity:.6;text-align:center"><p>The Super Star Guide · Issue #1</p><p>All characters and stories are original creations.</p><p>Wisdom inspired by the world's greatest performers and thinkers.</p></div>
+    <p style="margin-top:18px;font-size:.9em;opacity:.7;animation:pulse 2s ease-in-out infinite">← Click Back to read again!</p>
+  </div>
+  <div class="page-back" style="background:#1a1a2e"></div>
+</div>
+
+</div><!-- .book -->
+
+<!-- Navigation -->
+<div class="nav-area">
+  <div class="nav-btns">
+    <button class="nbtn" id="prevBtn" onclick="prevPage()" disabled>← Back</button>
+    <button class="nbtn" id="nextBtn" onclick="nextPage()">Next →</button>
+  </div>
+  <div class="pind" id="pind">Cover</div>
+  <div class="bcnt" id="bcnt">🏅 Badges: 0 / 10</div>
+</div>
+</div><!-- .mag-wrap -->
+
+<!-- ══════════════════════════════════════
+     POKEMON GO BADGE CATCH OVERLAY
+     ══════════════════════════════════════ -->
+<div id="ov" class="ovh">
+  <div class="ovstars" id="ovstars"></div>
+  <!-- Dialog -->
+  <div class="ovdlg" id="ovdlg">
+    <div class="ovdt" id="ovdt">✨ A wild badge appeared! ✨</div>
+    <div class="ovcn" id="ovcn">From: Captain Try-Hard</div>
+  </div>
+  <!-- Badge orb -->
+  <div class="ovba">
+    <div class="ovorb-wrap">
+      <div class="ovrng"></div><div class="ovrng"></div><div class="ovrng"></div>
+      <div class="ovorb" id="ovorb">
+        <div class="ovq" id="ovq">?</div>
+        <div class="ove" id="ove">🦁</div>
+      </div>
+    </div>
+    <!-- Caught result -->
+    <div class="ovres" id="ovres">
+      <div class="ovgot">GOTCHA! 🎉</div>
+      <div class="ovcb"><span class="ovbi" id="ovbi">🦁</span></div>
+      <div class="ovbname" id="ovbname">The Effort Badge</div>
+      <div class="ovbmot" id="ovbmot">"Trying hard is my superpower!"</div>
+      <div class="ovcnt" id="ovcnt">★ 1 of 10 badges! ★</div>
+    </div>
+  </div>
+  <!-- Star Ball catch zone -->
+  <div class="ovczn" id="ovczn">
+    <div class="ovhnt">TAP THE ⭐ STAR BALL TO CATCH!</div>
+    <div class="ovball" id="ovball" onclick="throwBall()"><span class="ovball-i">⭐</span></div>
+  </div>
+  <!-- Continue -->
+  <button class="ovcbtn" id="ovcbtn" onclick="closeOverlay()">⭐ Keep Reading! ⭐</button>
+  <!-- Confetti -->
+  <div id="cfcon" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+// THE SUPER STAR GUIDE — Fully Fixed JavaScript
+// Fixes: z-index, pointer-events, flip direction,
+//        Pokémon Go badge overlay, page labels, references
+// ════════════════════════════════════════════════════
+
+const pages = Array.from(document.querySelectorAll('.page'));
+const TOTAL = pages.length; // 28 pages (p0–p27)
+
+// FIX #2: Accurate page labels for all 28 states
+const LABELS = [
+  'Cover',
+  'Welcome — Inside Cover',
+  'Table of Contents — Page 1',
+  'Meet the Super Stars — Page 2',
+  'Captain Try-Hard — Page 3',
+  'Apply It + Catch Badge 1 — Page 4 ★',
+  "Flutter's Story — Page 5",
+  'Apply It + Catch Badge 2 — Page 6 ★',
+  'Focus Fiona — Page 7',
+  'Apply It + Catch Badge 3 — Page 8 ★',
+  'Busy Bee — Page 9',
+  'Apply It + Catch Badge 4 — Page 10 ★',
+  "Pip's Curiosity Quest — Page 11",
+  'Apply It + Catch Badge 5 — Page 12 ★',
+  "Sammy's Tiny Steps — Page 13",
+  'Apply It + Catch Badge 6 — Page 14 ★',
+  "Steady's Consistency Rule — Page 15",
+  'Apply It + Catch Badge 7 — Page 16 ★',
+  'Kindness Kate — Page 17',
+  'Apply It + Catch Badge 8 — Page 18 ★',
+  'Teamwork Ted — Page 19',
+  'Apply It + Catch Badge 9 — Page 20 ★',
+  "Starlight's Belief Magic — Page 21",
+  'Apply It + Catch Badge 10 — Page 22 ★',
+  'Badge Album — Page 23',
+  'Parent & Teacher Guide — Page 24',
+  'References — Page 25',
+  'Back Cover'
+];
+
+// Badge data indexed by page index where they trigger
+const BADGES = {
+  5:  {n:1,  e:'🦁', name:'The Effort Badge',       mot:'"Trying hard is my superpower!"',            ch:'Captain Try-Hard'},
+  7:  {n:2,  e:'🦋', name:'The Bounce-Back Badge',  mot:'"Mistakes make me stronger."',               ch:'Flutter the Butterfly'},
+  9:  {n:3,  e:'🦊', name:'The Focus Badge',        mot:'"I pick the one thing that matters most."',  ch:'Focus Fiona'},
+  11: {n:4,  e:'🐝', name:'The Practice Badge',     mot:'"I don\'t just repeat — I improve."',        ch:'Busy Bee'},
+  13: {n:5,  e:'🦉', name:'The Curiosity Badge',    mot:'"I ask great questions every day."',         ch:'Pip the Owl'},
+  15: {n:6,  e:'🐿️', name:'The Tiny Steps Badge',  mot:'"Small steps every day lead to big results."',ch:'Sammy the Squirrel'},
+  17: {n:7,  e:'🐢', name:'The Consistency Badge',  mot:'"I show up every single day."',              ch:'Steady the Turtle'},
+  19: {n:8,  e:'🐱', name:'The Kindness Badge',     mot:'"Kindness is my strongest superpower."',     ch:'Kindness Kate'},
+  21: {n:9,  e:'🐶', name:'The Teamwork Badge',     mot:'"I make everyone around me better."',        ch:'Teamwork Ted'},
+  23: {n:10, e:'⭐', name:'The Belief Badge',       mot:'"I am enough, and I\'m growing every day."', ch:'Starlight'}
+};
+
+let cur = 0; // current page index (0 = viewing p0, TOTAL = all flipped)
+const collected = new Set();
+let backZ = 0; // counter for going-back z-index
+
+// ── Z-INDEX (FIX #3 & flip direction) ──────────────────
+// Pages start at z:100,99,...,73 (HTML style attrs)
+// Forward flip: page gets z = its own index (low, sends to visual back)
+// Backward unflip: page gets z = 200+backZ (high, brings to visual front)
+// Result: unflipped pages always cover flipped pages visually → correct flip direction
+
+function setZ(i, z) { pages[i].style.zIndex = z; }
+
+// ── POINTER EVENTS (FIX #1) ────────────────────────────
+// Only the currently visible page receives pointer events
+function updatePE() {
+  pages.forEach(p => {
+    p.style.pointerEvents = 'none';
+    p.querySelectorAll('.page-front,.page-back').forEach(f => f.style.pointerEvents = 'none');
+  });
+  if (cur < TOTAL) {
+    const ap = pages[cur];
+    ap.style.pointerEvents = 'auto';
+    const pf = ap.querySelector('.page-front');
+    if (pf) pf.style.pointerEvents = 'auto';
+  }
+}
+
+// ── NAVIGATION ─────────────────────────────────────────
+function nextPage() {
+  if (cur >= TOTAL) return;
+  pages[cur].classList.add('flipped');
+  setZ(cur, cur); // send flipped page to back
+  cur++;
+  updatePE();
+  updateNav();
+  if (BADGES[cur] && !collected.has(BADGES[cur].n)) {
+    setTimeout(() => showOverlay(BADGES[cur]), 850);
+  }
+}
+
+function prevPage() {
+  if (cur <= 0) return;
+  cur--;
+  pages[cur].classList.remove('flipped');
+  setZ(cur, 200 + backZ++); // bring unflipped page to front
+  updatePE();
+  updateNav();
+}
+
+function updateNav() {
+  document.getElementById('prevBtn').disabled = cur === 0;
+  document.getElementById('nextBtn').disabled = cur === TOTAL;
+  document.getElementById('pind').textContent =
+    cur === TOTAL ? '🎊 The End! — Click Back to restart' : (LABELS[cur] || `Page ${cur + 1}`);
+}
+
+// Keyboard & touch
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextPage(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevPage(); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; }, {passive:true});
+document.addEventListener('touchend', e => {
+  const d = tx - e.changedTouches[0].screenX;
+  if (Math.abs(d) > 50) d > 0 ? nextPage() : prevPage();
+}, {passive:true});
+
+// ══════════════════════════════════════════════════════
+// POKÉMON GO BADGE CATCH OVERLAY
+// ══════════════════════════════════════════════════════
+let ovPhase = 0; // 0=closed 1=encounter 2=throwing 3=caught
+let curBadge = null;
+
+function makeStars() {
+  const c = document.getElementById('ovstars'); c.innerHTML = '';
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div'); s.className = 'ovs';
+    const sz = Math.random()*3+1;
+    Object.assign(s.style, {width:sz+'px',height:sz+'px',left:Math.random()*100+'%',top:Math.random()*100+'%'});
+    s.style.setProperty('--d',(Math.random()*2+1)+'s');
+    c.appendChild(s);
+  }
+}
+
+function showOverlay(badge) {
+  curBadge = badge; ovPhase = 1;
+  const ov = document.getElementById('ov');
+  // Reset
+  ov.classList.remove('ovh'); ov.style.display = 'flex'; ov.style.opacity = '0';
+  document.getElementById('ovdt').textContent = '✨ A wild badge appeared! ✨';
+  document.getElementById('ovcn').textContent = 'From: ' + badge.ch;
+  document.getElementById('ovq').style.display = 'block';
+  document.getElementById('ove').style.display = 'none';
+  const orb = document.getElementById('ovorb');
+  orb.className = 'ovorb';
+  document.getElementById('ovres').classList.remove('ovrv');
+  document.getElementById('ovczn').style.display = 'flex';
+  const btn = document.getElementById('ovcbtn'); btn.classList.remove('ovcbv');
+  const ball = document.getElementById('ovball');
+  ball.classList.remove('ovthr'); ball.style.animation = '';
+  void ball.offsetWidth;
+  ball.style.animation = 'ovbb .75s ease-in-out infinite alternate,holo 2s linear infinite';
+  document.getElementById('cfcon').innerHTML = '';
+  makeStars();
+  requestAnimationFrame(() => { ov.classList.add('ova'); ov.style.opacity = ''; });
+}
+
+function throwBall() {
+  if (ovPhase !== 1) return;
+  ovPhase = 2;
+  const ball = document.getElementById('ovball');
+  ball.style.animation = 'none'; ball.classList.add('ovthr');
+  setTimeout(() => {
+    const orb = document.getElementById('ovorb');
+    orb.classList.add('ovi');
+    setTimeout(() => {
+      orb.classList.remove('ovi'); orb.classList.add('ovs2');
+      setTimeout(revealBadge, 1350);
+    }, 420);
+  }, 620);
+}
+
+function revealBadge() {
+  ovPhase = 3;
+  const b = curBadge;
+  const orb = document.getElementById('ovorb');
+  orb.classList.remove('ovs2');
+  document.getElementById('ovq').style.display = 'none';
+  document.getElementById('ove').textContent = b.e;
+  document.getElementById('ove').style.display = 'block';
+  document.getElementById('ovczn').style.display = 'none';
+  document.getElementById('ovdt').textContent = 'GOTCHA! Badge Caught! 🎉';
+  document.getElementById('ovbi').textContent = b.e;
+  document.getElementById('ovbname').textContent = b.name;
+  document.getElementById('ovbmot').textContent = b.mot;
+  document.getElementById('ovcnt').textContent = '★ '+(collected.size+1)+' of 10 badges! ★';
+  document.getElementById('ovres').classList.add('ovrv');
+  document.getElementById('ovcbtn').classList.add('ovcbv');
+  collectBadge(b.n);
+  launchConfetti();
+}
+
+function closeOverlay() {
+  const ov = document.getElementById('ov');
+  ov.classList.remove('ova');
+  setTimeout(() => { ov.classList.add('ovh'); ov.style.display = 'none'; ovPhase = 0; }, 500);
+}
+
+function launchConfetti() {
+  const c = document.getElementById('cfcon');
+  const cols = ['#ffd700','#ff6b6b','#7bed9f','#70a1ff','#a55eea','#ffdd59','#fd79a8','#00cec9'];
+  for (let i = 0; i < 55; i++) {
+    const p = document.createElement('div'); p.className = 'cfp';
+    p.style.left = Math.random()*100+'%';
+    p.style.background = cols[Math.floor(Math.random()*cols.length)];
+    p.style.setProperty('--d',(Math.random()+1.2)+'s');
+    p.style.setProperty('--dl',(Math.random()*.5)+'s');
+    p.style.setProperty('--r',(Math.random()*720+360)+'deg');
+    const shapes = ['50%','0','50% 0'];
+    p.style.borderRadius = shapes[Math.floor(Math.random()*shapes.length)];
+    const sz = Math.random()*8+6;
+    p.style.width = sz+'px'; p.style.height = sz+'px';
+    c.appendChild(p);
+    setTimeout(() => p.remove(), 2600);
+  }
+}
+
+// ── INLINE BADGE DISPLAY UPDATE ────────────────────────
+function collectBadge(n) {
+  if (collected.has(n)) return;
+  collected.add(n);
+  // Update inline badge on page
+  const ico = document.getElementById('b'+n+'i');
+  if (ico) { ico.classList.remove('unc'); ico.classList.add('bcol'); sparkle('sc'+n); }
+  const st = document.getElementById('bs'+n);
+  if (st) { st.textContent = '✅ Badge '+n+' of 10 collected! ★'; st.style.background='rgba(0,184,148,.12)'; st.style.color='#00b894'; }
+  // Update badge album
+  const ab = document.getElementById('ab'+n);
+  if (ab) ab.classList.remove('unc');
+  // Update counter
+  const cnt = document.getElementById('bcnt');
+  cnt.textContent = collected.size === 10 ? '🏆 ALL 10 Badges! Super Star Champion! 🏆' : '🏅 Badges: '+collected.size+' / 10';
+}
+
+function sparkle(cid) {
+  const c = document.getElementById(cid); if (!c) return;
+  const cols = ['#ffd700','#ff6b6b','#7bed9f','#70a1ff','#a55eea','#ffdd59'];
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div'); s.className = 'sparkle';
+    s.style.setProperty('--tx',(Math.random()-.5)*120+'px');
+    s.style.setProperty('--ty',(Math.random()-.5)*120+'px');
+    s.style.background = cols[Math.floor(Math.random()*cols.length)];
+    s.style.left = '50%'; s.style.top = '50%';
+    c.appendChild(s);
+    setTimeout(() => s.remove(), 850);
+  }
+}
+
+// Init
+updatePE();
+updateNav();
+</script>
+</body>
+</html>
