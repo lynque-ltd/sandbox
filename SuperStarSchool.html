@@ -12,11 +12,12 @@ body{display:flex;flex-direction:column;justify-content:center;align-items:cente
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(2px 2px at 20px 30px,#eee,transparent),radial-gradient(1px 1px at 80px 60px,#fff,transparent),radial-gradient(2px 2px at 140px 20px,#ddd,transparent),radial-gradient(1px 1px at 50px 90px,#fff,transparent),radial-gradient(1px 1px at 170px 70px,rgba(255,255,255,0.7),transparent);background-size:200px 100px;animation:twinkle 4s ease-in-out infinite alternate;pointer-events:none;z-index:0}
 @keyframes twinkle{0%{opacity:.6}100%{opacity:1}}
 .mag-wrap{position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center}
-.book{width:750px;height:540px;position:relative;overflow:hidden;border-radius:18px}
-/* SLIDE MODE: each page is a full-size slide, only .active is visible */
-.page{width:100%;height:100%;position:absolute;top:0;left:0;opacity:0;pointer-events:none;transition:opacity .35s ease;z-index:1}
-.page.active{opacity:1;pointer-events:auto;z-index:2}
-.page-front,.page-back{position:absolute;width:100%;height:100%;border-radius:18px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.book{width:750px;min-height:540px;position:relative;border-radius:18px}
+/* SLIDE MODE: each page stacks in place; only .active is visible */
+.page{width:100%;position:relative;opacity:0;pointer-events:none;transition:opacity .35s ease;z-index:1;display:none}
+.page.active{opacity:1;pointer-events:auto;z-index:2;display:block}
+/* page-front fills its page and scrolls itself on devices that need it */
+.page-front,.page-back{width:100%;border-radius:18px;display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y}
 .page-front{background:#fffbf2;box-shadow:0 8px 40px rgba(0,0,0,.35)}
 .page-back{display:none}
 .page-front::-webkit-scrollbar,.page-back::-webkit-scrollbar{width:5px}
@@ -25,8 +26,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .deco-back .di{font-size:4em}.deco-back .dt{font-family:'Fredoka One',cursive;font-size:1.5em}.deco-back .ds{font-size:.9em;opacity:.8}
 /* COVER */
 .cover .page-front{background:linear-gradient(160deg,#ff6b35,#f7931e 20%,#ffcc02 45%,#6c5ce7 70%,#a55eea);color:#fff;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;text-shadow:2px 3px 6px rgba(0,0,0,.25);position:relative;overflow:hidden}
-.cover .page-front::before{content:'✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★';position:absolute;top:10px;left:0;right:0;font-size:.8em;letter-spacing:8px;opacity:.5}
-.cover .page-front::after{content:'✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★';position:absolute;bottom:10px;left:0;right:0;font-size:.8em;letter-spacing:8px;opacity:.5}
+.cover .page-front::before{content:'✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧';position:absolute;top:10px;left:0;right:0;font-size:.8em;letter-spacing:8px;opacity:.5}
+.cover .page-front::after{content:'✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧';position:absolute;bottom:10px;left:0;right:0;font-size:.8em;letter-spacing:8px;opacity:.5}
 .cv-badge{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:6px 20px;font-size:.85em;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
 .cover h1{font-family:'Fredoka One',cursive;font-size:2.8em;line-height:1.15;background:linear-gradient(to right,#fff,#ffeaa7,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(2px 3px 4px rgba(0,0,0,.3))}
 .cover .tagline{font-family:'Balsamiq Sans',sans-serif;font-size:1.2em;font-weight:700;margin:6px 0 16px;opacity:.95}
@@ -34,11 +35,11 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .cv-hint{margin-top:18px;font-size:1em;font-weight:700;background:rgba(0,0,0,.15);padding:8px 24px;border-radius:30px;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
 /* LAYOUT */
-.pc{padding:26px 30px 18px;height:100%;display:flex;flex-direction:column}
+.pc{padding:26px 30px 18px}
 .ph{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:3px solid;flex-shrink:0}
 .ph .si{font-size:1.6em}.ph .sl{font-family:'Fredoka One',cursive;font-size:.7em;text-transform:uppercase;letter-spacing:2px;opacity:.7}.ph .st{font-family:'Fredoka One',cursive;font-size:1.45em;line-height:1.2}
 .to .ph{border-color:#ff6b35;color:#e55d2b}.tp .ph{border-color:#6c5ce7;color:#5f3dc3}.tg .ph{border-color:#00b894;color:#00a381}.tb .ph{border-color:#0984e3;color:#0770c2}.tpk .ph{border-color:#e84393;color:#d63384}.ty .ph{border-color:#fdcb6e;color:#e17055}.tr .ph{border-color:#d63031;color:#b71c1c}.ttl .ph{border-color:#00cec9;color:#00a8a5}
-.pb{flex:1;font-size:.94em;line-height:1.65;color:#2d3436;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+.pb{font-size:.94em;line-height:1.65;color:#2d3436}
 .pb p{margin-bottom:10px}
 .csays{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,#f8f9fa,#e9ecef);border-radius:16px;padding:12px 14px;margin:10px 0;border:2px solid #dee2e6}
 .cav{font-size:2em;flex-shrink:0;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.1)}
@@ -84,7 +85,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .st .bl{font-family:'Fredoka One',cursive;font-size:.78em;text-transform:uppercase;letter-spacing:1px;color:#283593;margin-bottom:5px}
 .sb{background:linear-gradient(135deg,#fce4ec,#f8bbd0);border-left:5px solid #e91e63;border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0}
 .sb .bl{font-family:'Fredoka One',cursive;font-size:.78em;text-transform:uppercase;letter-spacing:1px;color:#ad1457;margin-bottom:5px}
-.pn{text-align:center;font-size:.75em;color:#b2bec3;padding:5px 0 3px;flex-shrink:0;border-top:1px solid #f1f2f6;margin-top:auto}
+.pn{text-align:center;font-size:.75em;color:#b2bec3;padding:8px 0 4px;border-top:1px solid #f1f2f6;margin-top:12px}
 .pn span{font-family:'Fredoka One',cursive;color:#dfe6e9}
 .toc-list{list-style:none;padding:0}
 .toc-list li{display:flex;align-items:center;gap:10px;padding:7px 10px;margin:3px 0;border-radius:10px;font-weight:600;font-size:.9em}
@@ -117,7 +118,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .rn{font-size:.79em;color:#b2bec3;margin-top:2px}
 /* PRINT */
 @media print{body{background:#fff;overflow:visible}.nav-area,#ov{display:none!important}.book{width:100%;height:auto;perspective:none}.page{position:relative;width:100%;height:auto;page-break-after:always;transform:none!important;pointer-events:auto}.page-back{display:none}.page-front{box-shadow:none;border:1px solid #ddd;min-height:540px;pointer-events:auto;position:relative}}
-@media(max-width:800px){.book{width:95vw;height:82vh;height:82dvh;max-height:620px}.pc{padding:14px 16px 12px}.cover h1{font-size:1.8em}.ph .st{font-size:1.2em}.pb{font-size:.87em}.bgrid{gap:6px}.tc{grid-template-columns:1fr}.nav-area{margin-top:10px}.nbtn{padding:9px 22px;font-size:.9em}}
+@media(max-width:800px){.book{width:95vw}.pc{padding:14px 16px 12px}.cover h1{font-size:1.8em}.ph .st{font-size:1.2em}.pb{font-size:.87em}.bgrid{gap:6px}.tc{grid-template-columns:1fr}.nav-area{margin-top:10px}.nbtn{padding:9px 22px;font-size:.9em}}
 
 /* ══════════════════════════════════════════
    POKEMON GO BADGE CATCH OVERLAY  (FIX #1)
@@ -190,7 +191,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="cv-chars">🦁 🦉 🐱 🦊 🐢 🐝 🦋 🐶 🐿️ ⭐</div>
     <p style="font-size:.85em;max-width:420px;margin-top:8px;opacity:.9">Meet your 10 Super Star teachers who each mastered one secret ingredient of success. Catch all 10 holographic badges as you read!</p>
     <p style="font-size:.8em;opacity:.7;margin-top:10px">For young future champions · Ages 6–10</p>
-    <p class="cv-hint">✨ Click NEXT to begin your adventure! ✨</p>
+    <p class="cv-hint">✨Click NEXT to start!✨</p>
   </div>
   <div class="page-back" style="background:linear-gradient(135deg,#6c5ce7,#a55eea)">
     <div class="deco-back"><div class="di">📖</div><div class="dt">Your adventure begins…</div></div>
@@ -964,7 +965,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 // ════════════════════════════════════════════════════
 // SUPER STAR SCHOOL — Slide-Mode + Auto-Save
 // - Slide-based navigation (no flip)
-// - sessionStorage auto-save of last page visited
 // - Full mobile / iOS Safari compatibility
 // ════════════════════════════════════════════════════
 
@@ -1020,26 +1020,6 @@ const BADGES = {
 let cur = 0;
 const collected = new Set();
 
-// ── AUTO-SAVE (sessionStorage) ──────────────────────
-// Saves the last page the user reached so they can
-// resume if they close the tab or navigate away.
-const SAVE_KEY = 'ssg_last_page';
-
-function saveProgress() {
-  try { sessionStorage.setItem(SAVE_KEY, String(cur)); } catch(e) {}
-}
-
-function loadProgress() {
-  try {
-    const v = sessionStorage.getItem(SAVE_KEY);
-    if (v !== null) {
-      const n = parseInt(v, 10);
-      if (!isNaN(n) && n >= 0 && n < TOTAL) return n;
-    }
-  } catch(e) {}
-  return 0;
-}
-
 // ── SLIDE NAVIGATION ───────────────────────────────
 function goToPage(index, skipBadge) {
   if (index < 0 || index >= TOTAL) return;
@@ -1050,7 +1030,6 @@ function goToPage(index, skipBadge) {
   const pf = pages[cur].querySelector('.page-front');
   if (pf) pf.scrollTop = 0;
   updateNav();
-  saveProgress();
   if (!skipBadge && BADGES[cur] && !collected.has(BADGES[cur].n)) {
     setTimeout(() => showOverlay(BADGES[cur]), 420);
   }
@@ -1223,21 +1202,9 @@ function sparkle(cid) {
 }
 
 // ── INIT ─────────────────────────────────────────────
-// Restore last visited page from sessionStorage
-const savedPage = loadProgress();
-cur = savedPage;
-pages[cur].classList.add('active');
+cur = 0;
+pages[0].classList.add('active');
 updateNav();
-
-// Show resume toast if returning to a non-cover page
-if (savedPage > 0) {
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(108,92,231,.92);color:#fff;font-family:"Fredoka One",cursive;font-size:.9em;padding:8px 22px;border-radius:24px;z-index:9998;box-shadow:0 4px 20px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:opacity .4s ease;white-space:nowrap';
-  toast.textContent = '✨ Resumed from ' + (LABELS[savedPage] || 'Page ' + (savedPage + 1));
-  document.body.appendChild(toast);
-  requestAnimationFrame(() => { toast.style.opacity = '1'; });
-  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
-}
 </script>
 
 </body>
